@@ -1,0 +1,100 @@
+{
+  "timestamp": "20250918_105951",
+  "models": {
+    "svm": {
+      "type": "Support Vector Machine",
+      "library": "sklearn",
+      "file": "svm_model.joblib",
+      "hyperparameters": {
+        "kernel": "rbf",
+        "C": 1.0,
+        "gamma": "scale",
+        "class_weight": "balanced"
+      }
+    },
+    "random_forest": {
+      "type": "Random Forest Classifier",
+      "library": "sklearn",
+      "file": "random_forest_model.joblib",
+      "hyperparameters": {
+        "n_estimators": 100,
+        "max_depth": 10,
+        "min_samples_split": 5,
+        "min_samples_leaf": 2,
+        "class_weight": "balanced"
+      }
+    },
+    "lstm": {
+      "type": "LSTM Neural Network",
+      "library": "tensorflow.keras",
+      "file": "lstm_model.h5",
+      "architecture": {
+        "embedding_dim": 128,
+        "lstm_units": 64,
+        "dropout": 0.3,
+        "recurrent_dropout": 0.3,
+        "final_dropout": 0.5
+      },
+      "training": {
+        "optimizer": "Adam",
+        "learning_rate": 0.001,
+        "loss": "binary_crossentropy",
+        "batch_size": 32,
+        "max_epochs": 10,
+        "early_stopping_patience": 3
+      }
+    }
+  },
+  "preprocessing": {
+    "tfidf_vectorizer": {
+      "file": "tfidf_vectorizer.joblib",
+      "parameters": {
+        "max_features": 5000,
+        "min_df": 2,
+        "max_df": 0.95,
+        "ngram_range": [
+          1,
+          2
+        ],
+        "stop_words": "english"
+      }
+    },
+    "standard_scaler": {
+      "file": "standard_scaler.joblib",
+      "features": [
+        "message_length",
+        "digit_ratio",
+        "capital_ratio",
+        "special_char_count"
+      ]
+    },
+    "lstm_tokenizer": {
+      "file": "lstm_tokenizer.pickle",
+      "parameters": {
+        "num_words": 10000,
+        "oov_token": "<OOV>",
+        "max_sequence_length": 21
+      }
+    },
+    "label_encoder": {
+      "file": "label_encoder.joblib",
+      "encoding": {
+        "ham": 0,
+        "spam": 1
+      }
+    }
+  },
+  "feature_engineering": {
+    "numerical_features": [
+      "message_length",
+      "digit_ratio",
+      "capital_ratio",
+      "special_char_count"
+    ],
+    "text_features": [
+      "cleaned_message"
+    ],
+    "tfidf_features": 5000,
+    "total_classical_features": 5004
+  }
+}
