@@ -10,7 +10,6 @@ approaches for SMS spam detection:
 The pipeline processes the feature-engineered dataset and provides detailed
 performance comparisons across all models.
 
-Author: Data Science Team
 """
 
 import pandas as pd
