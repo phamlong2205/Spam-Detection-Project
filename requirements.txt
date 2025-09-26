@@ -9,3 +9,4 @@ ipykernel>=6.25.0
 pytest>=7.4.0
 setuptools>=68.0.0
 tensorflow>=2.15.0
+beautifulsoup4>=4.12,<5

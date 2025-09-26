@@ -1,144 +1,142 @@
-"""
-SMS Spam Detection Dataset Processing Demo
-
-This script demonstrates how to use the SMS preprocessing pipeline 
-with the spam.csv dataset to prepare data for machine learning.
-"""
-
+from pathlib import Path
 import pandas as pd
-from sms_preprocessor import SMSPreprocessor, preprocess_sms_text
-import time
+from typing import Optional
+from src.spam_detection.email_preprocessor import clean_email_text
+# (optional) show a preview using the unified normalizer if you added it
+try:
+    from src.spam_detection.preprocessing import preprocess_text_unified
+except Exception:
+    preprocess_text_unified = None
 
-def load_and_preprocess_spam_data(csv_path: str, sample_size: int = None):
-    """
-    Load and preprocess the spam dataset.
-    
-    Args:
-        csv_path (str): Path to the spam.csv file
-        sample_size (int, optional): Number of samples to process (for testing)
-        
-    Returns:
-        pd.DataFrame: DataFrame with original and preprocessed text
-    """
-    # Load the dataset
-    df = pd.read_csv(csv_path, encoding='latin-1')
-    
-    # The dataset has columns: v1 (label), v2 (message), and some unnamed columns
-    # Let's clean it up
-    df = df[['v1', 'v2']].copy()
-    df.columns = ['label', 'message']
-    
-    # Remove any null values
-    df = df.dropna()
-    
-    # Take a sample if specified
-    if sample_size:
-        df = df.sample(n=min(sample_size, len(df)), random_state=42)
-    
-    print(f"Dataset shape: {df.shape}")
-    print(f"Label distribution:\n{df['label'].value_counts()}")
-    print("\n" + "="*50)
-    
-    # Initialize preprocessor
-    preprocessor = SMSPreprocessor(use_lemmatization=True)
-    
-    # Preprocess messages
-    print("Preprocessing messages...")
-    start_time = time.time()
-    
-    df['processed_message'] = df['message'].apply(preprocessor.preprocess_sms)
-    
-    end_time = time.time()
-    print(f"Preprocessing completed in {end_time - start_time:.2f} seconds")
-    print(f"Average processing time per message: {(end_time - start_time) / len(df) * 1000:.2f} ms")
-    
-    return df
+BASE_DIR = Path(__file__).resolve().parent
+DATA_DIR = BASE_DIR / "data"
 
-def show_preprocessing_examples(df: pd.DataFrame, n_examples: int = 5):
-    """
-    Display examples of original and preprocessed messages.
-    
-    Args:
-        df (pd.DataFrame): Processed dataframe
-        n_examples (int): Number of examples to show
-    """
-    print(f"\n{n_examples} Random Preprocessing Examples:")
-    print("="*80)
-    
-    # Show examples from both spam and ham
-    spam_examples = df[df['label'] == 'spam'].sample(n=min(n_examples//2 + 1, sum(df['label'] == 'spam')))
-    ham_examples = df[df['label'] == 'ham'].sample(n=min(n_examples//2 + 1, sum(df['label'] == 'ham')))
-    
-    examples = pd.concat([spam_examples, ham_examples]).head(n_examples)
-    
-    for idx, row in examples.iterrows():
-        print(f"\nExample {idx + 1} [{row['label'].upper()}]:")
-        print(f"Original: {row['message'][:100]}{'...' if len(row['message']) > 100 else ''}")
-        print(f"Processed: {row['processed_message']}")
-        print("-" * 80)
 
-def analyze_preprocessing_results(df: pd.DataFrame):
-    """
-    Analyze the results of preprocessing.
-    
-    Args:
-        df (pd.DataFrame): Processed dataframe
-    """
-    print("\nPreprocessing Analysis:")
-    print("="*50)
-    
-    # Calculate statistics
-    original_lengths = df['message'].str.len()
-    processed_lengths = df['processed_message'].str.len()
-    
-    print(f"Original message length - Mean: {original_lengths.mean():.1f}, Median: {original_lengths.median():.1f}")
-    print(f"Processed message length - Mean: {processed_lengths.mean():.1f}, Median: {processed_lengths.median():.1f}")
-    print(f"Average length reduction: {(1 - processed_lengths.mean() / original_lengths.mean()) * 100:.1f}%")
-    
-    # Word count analysis
-    original_word_counts = df['message'].str.split().str.len()
-    processed_word_counts = df['processed_message'].str.split().str.len()
-    
-    print(f"\nOriginal word count - Mean: {original_word_counts.mean():.1f}, Median: {original_word_counts.median():.1f}")
-    print(f"Processed word count - Mean: {processed_word_counts.mean():.1f}, Median: {processed_word_counts.median():.1f}")
-    print(f"Average word reduction: {(1 - processed_word_counts.mean() / original_word_counts.mean()) * 100:.1f}%")
-    
-    # Empty messages after preprocessing
-    empty_processed = (df['processed_message'].str.strip() == '').sum()
-    print(f"\nMessages that became empty after preprocessing: {empty_processed} ({empty_processed/len(df)*100:.2f}%)")
+def _resolve(path_str: str) -> Path:
+    p = Path(path_str)
+    candidates = [
+        DATA_DIR / path_str,         # e.g. data/spam.csv
+        BASE_DIR / path_str,         # e.g. spam.csv at project root
+        p if p.is_absolute() else None
+    ]
+    for c in candidates:
+        if c and c.exists():
+            return c
+    raise FileNotFoundError(
+        f"Could not find '{path_str}'. Tried: {(DATA_DIR / path_str)}, {(BASE_DIR / path_str)}"
+    )
 
-def save_processed_data(df: pd.DataFrame, output_path: str):
+
+def load_dataset(path: str, dataset_type: str) -> pd.DataFrame:
     """
-    Save the processed dataset.
-    
-    Args:
-        df (pd.DataFrame): Processed dataframe
-        output_path (str): Path to save the processed data
+    Returns DataFrame with columns: ['label','message'].
+    - For SMS (spam.csv): maps v1->label, v2->message
+    - For Enron email: uses 'Spam/Ham' as label and Subject+Message as message,
+      then runs light HTML/quote/link cleanup.
     """
-    df.to_csv(output_path, index=False)
-    print(f"\nProcessed dataset saved to: {output_path}")
+    path = _resolve(path)
+    try:
+        df = pd.read_csv(path, encoding="utf-8", low_memory=False)
+    except Exception:
+        df = pd.read_csv(path, encoding="latin-1", low_memory=False)
+
+    if dataset_type == "sms":
+        if not {"v1", "v2"}.issubset(df.columns):
+            raise ValueError("SMS dataset must contain columns v1 (label) and v2 (message).")
+        df = df[["v1", "v2"]].copy()
+        df.columns = ["label", "message"]
+        df = df.dropna(subset=["label", "message"]).reset_index(drop=True)
+        return df
+
+    if dataset_type != "email":
+        raise ValueError("dataset_type must be 'sms' or 'email'.")
+
+    # ---- EMAIL (Enron) exact-ish schema handling ----
+    norm_map = {c: c.strip().lower() for c in df.columns}
+    df = df.rename(columns=norm_map)
+
+    # typical columns in your file: 'message id', 'subject', 'message', 'spam/ham', 'date'
+    # pick label
+    label_col = None
+    for c in ("spam/ham", "label", "is_spam", "target", "category", "class"):
+        if c in df.columns:
+            label_col = c
+            break
+    if label_col is None:
+        raise ValueError("Email dataset must include a label column (e.g., 'Spam/Ham').")
+
+    # pick text (prefer body, else subject, else both)
+    subject_col = "subject" if "subject" in df.columns else None
+    message_col = None
+    for c in ("message", "text", "body", "content", "raw"):
+        if c in df.columns:
+            message_col = c
+            break
+
+    if subject_col and message_col:
+        msg_series = (df[subject_col].fillna("") + " " + df[message_col].fillna("")).str.strip()
+    elif message_col:
+        msg_series = df[message_col].astype(str)
+    elif subject_col:
+        msg_series = df[subject_col].astype(str)
+    else:
+        raise ValueError("Email dataset must include a text-like column (e.g., 'Message' or 'Subject').")
+
+    out = pd.DataFrame({
+        "label": df[label_col].astype(str).str.strip().str.lower(),
+        "message": msg_series.astype(str)
+    })
+
+    # normalize label values
+    out["label"] = out["label"].replace({
+        "1": "spam", "0": "ham",
+        "true": "spam", "false": "ham",
+        "yes": "spam", "no": "ham"
+    })
+
+    out = out[out["label"].isin(["ham", "spam"])]
+
+    # email-specific light cleanup
+    out["message"] = out["message"].map(clean_email_text)
+
+    out = out[out["message"].str.strip().ne("")].reset_index(drop=True)
+    if out.empty:
+        raise ValueError("After normalization/cleanup, no valid email rows remain.")
+    return out
+
 
 if __name__ == "__main__":
-    # Process the dataset
-    print("SMS Spam Detection - Dataset Preprocessing Demo")
-    print("="*60)
-    
-    # Load and preprocess data (using a sample for demo)
-    df = load_and_preprocess_spam_data('spam.csv', sample_size=100)
-    
-    # Show examples
-    show_preprocessing_examples(df, n_examples=6)
-    
-    # Analyze results
-    analyze_preprocessing_results(df)
-    
-    # Save processed data
-    save_processed_data(df, 'processed_spam_sample.csv')
-    
-    print("\n" + "="*60)
-    print("Demo completed! The preprocessing pipeline is ready for use with machine learning models.")
-    print("\nNext steps:")
-    print("1. Use TF-IDF vectorization on the 'processed_message' column")
-    print("2. Split data into training and testing sets")
-    print("3. Train your spam detection model (SVM, Naive Bayes, etc.)")
-    print("4. Evaluate model performance")
+    print("Dataset-aware preprocessing demo")
+    print("=" * 60)
+
+    # Load both datasets from ./data
+    sms_df = load_dataset("spam.csv", dataset_type="sms")
+    email_df = load_dataset("enron_spam_data.csv", dataset_type="email")
+
+    print(f"SMS shape: {sms_df.shape}")
+    print(sms_df["label"].value_counts())
+    print("-" * 40)
+    print(f"Email shape: {email_df.shape}")
+    print(email_df["label"].value_counts())
+
+    # Optional: preview unified normalization if available
+    if preprocess_text_unified is not None:
+        print("\nPreview (SMS):")
+        for t in sms_df["message"].head(3).tolist():
+            print("•", preprocess_text_unified(t, source="sms")[:120])
+
+        print("\nPreview (Email):")
+        for t in email_df["message"].head(3).tolist():
+            print("•", preprocess_text_unified(t, source="email")[:120])
+
+    # Save normalized copies for the next step
+    DATA_DIR.mkdir(exist_ok=True)
+    sms_out = DATA_DIR / "sms_messages_normalized.csv"
+    email_out = DATA_DIR / "email_messages_normalized.csv"
+    sms_df.to_csv(sms_out, index=False, encoding="utf-8")
+    email_df.to_csv(email_out, index=False, encoding="utf-8")
+
+    print("\nSaved:")
+    print(f"  {sms_out}")
+    print(f"  {email_out}")
+    print("\n✅ demo_preprocessing.py finished.", flush=True)

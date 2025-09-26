@@ -7,12 +7,13 @@ We're moving your existing SMSPreprocessor class here to organize the code bette
 
 import re
 import string
-from typing import List, Optional
+from typing import List, Optional, Literal
 import nltk
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.stem import PorterStemmer
 from nltk.stem import WordNetLemmatizer
+from .email_preprocessor import clean_email_text
 
 # Download required NLTK data (run once)
 try:
@@ -309,3 +310,28 @@ def preprocess_sms_text(text: str, use_lemmatization: bool = True,
     preprocessor = SMSPreprocessor(use_lemmatization=use_lemmatization, 
                                   custom_stop_words=custom_stop_words)
     return preprocessor.preprocess_sms(text)
+
+def preprocess_text_unified(
+    text: str,
+    source: Literal["sms","email"]="sms",
+    use_lemmatization: bool = True
+) -> str:
+    """
+    Runs a minimal email-cleaning pass when source='email', then reuses the
+    same downstream normalization/tokenization you already use for SMS so the
+    final tokens have the same distribution across datasets.
+    """
+    if not isinstance(text, str) or not text.strip():
+        return ""
+
+    if source == "email":
+        text = clean_email_text(text)
+
+    # Reuse your existing SMS pipeline as the common text normalizer:
+    pre = SMSPreprocessor(use_lemmatization=use_lemmatization)
+    return pre.preprocess_sms(text)
+
+def preprocess_text_auto(text: str) -> str:
+    # Very light heuristic; you can improve if needed.
+    looks_like_email = ("@" in text) or ("<html" in text.lower()) or ("From:" in text)
+    return preprocess_text_unified(text, source="email" if looks_like_email else "sms")
