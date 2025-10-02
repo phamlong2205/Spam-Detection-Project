@@ -5,8 +5,6 @@ Simple Visualization Pipeline for Spam Detection - Matplotlib & Seaborn Only
 Clean, professional visualizations using only matplotlib and seaborn.
 No external dependencies beyond what's typically available in data science environments.
 
-Author: Data Science Team
-Date: 2025-09-26
 """
 
 import pandas as pd
@@ -183,7 +181,7 @@ class SimpleSpamVisualizer:
         
         return fig
     
-    def create_model_comparison(self, results_file='improved_model_results_20250926_162041.csv'):
+    def create_model_comparison(self, results_file='improved_model_results_20251002_143309.csv'):
         """Create model comparison dashboard using matplotlib/seaborn only."""
         print("\n🏆 Creating Model Comparison Dashboard...")
         

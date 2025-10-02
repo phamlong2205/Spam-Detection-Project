@@ -201,10 +201,10 @@ def train_regularized_classical_models(X_train, X_val, X_test, y_train, y_val, y
     
     # Conservative hyperparameters
     base_rf = RandomForestClassifier(
-        n_estimators=50,
-        max_depth=5,
-        min_samples_split=10,
-        min_samples_leaf=5,
+        n_estimators=200,
+        max_depth=15,
+        min_samples_split=5,
+        min_samples_leaf=2,
         max_features='sqrt',
         class_weight='balanced',
         random_state=42,
@@ -212,12 +212,7 @@ def train_regularized_classical_models(X_train, X_val, X_test, y_train, y_val, y
     )
     
     # Bagging for additional regularization
-    rf_model = BaggingClassifier(
-        estimator=base_rf,
-        n_estimators=3,
-        random_state=42,
-        n_jobs=-1
-    )
+    rf_model = base_rf
     
     start_time = time.time()
     rf_model.fit(X_train_balanced, y_train_balanced)
@@ -315,41 +310,35 @@ def train_regularized_lstm(X_padded, y, max_sequence_length, vocab_size) -> Tupl
     print("\nBuilding LSTM architecture...")
     
     model = Sequential([
-        # Embedding with L1+L2 regularization
+        # Embedding without regularization
         Embedding(
             input_dim=vocab_size + 1,
-            output_dim=64,
+            output_dim=128,
             input_length=max_sequence_length,
-            mask_zero=True,
-            embeddings_regularizer=l1_l2(l1=1e-5, l2=1e-4)
+            mask_zero=True
         ),
         
         # Spatial dropout
-        SpatialDropout1D(0.3),
+        SpatialDropout1D(0.2),
         
         # LSTM with heavy regularization
         LSTM(
-            units=32,
-            dropout=0.5,
-            recurrent_dropout=0.5,
-            kernel_regularizer=l1_l2(l1=1e-5, l2=1e-4),
+            units=64,
+            dropout=0.3,
+            recurrent_dropout=0.3,
             return_sequences=False
         ),
         
-        # Batch normalization
-        BatchNormalization(),
-        
         # Dropout
-        Dropout(0.6),
+        Dropout(0.4),
         
         # Dense layer with regularization
         Dense(
-            16,
-            activation='relu',
-            kernel_regularizer=l1_l2(l1=1e-5, l2=1e-4)
+            32,
+            activation='relu'
         ),
         
-        Dropout(0.5),
+        Dropout(0.3),
         
         # Output layer
         Dense(1, activation='sigmoid')
@@ -357,7 +346,7 @@ def train_regularized_lstm(X_padded, y, max_sequence_length, vocab_size) -> Tupl
     
     # Conservative optimizer
     optimizer = Adam(
-        learning_rate=0.0005,
+        learning_rate=0.001,
         clipnorm=1.0
     )
     
@@ -373,16 +362,17 @@ def train_regularized_lstm(X_padded, y, max_sequence_length, vocab_size) -> Tupl
     # Callbacks for overfitting prevention
     callbacks = [
         EarlyStopping(
-            monitor='val_loss',
-            patience=5,
+            monitor='val_f1_score',
+            patience=7,
             restore_best_weights=True,
-            verbose=1
+            verbose=1,
+            mode='max'
         ),
         
         ReduceLROnPlateau(
             monitor='val_loss',
-            factor=0.5,
-            patience=3,
+            factor=0.7,
+            patience=4,
             min_lr=1e-6,
             verbose=1
         ),
@@ -401,12 +391,11 @@ def train_regularized_lstm(X_padded, y, max_sequence_length, vocab_size) -> Tupl
     
     history = model.fit(
         X_train_balanced, y_train_balanced,
-        batch_size=64,
-        epochs=20,
+        batch_size=128,
+        epochs=15,
         validation_data=(X_val, y_val),
         callbacks=callbacks,
-        verbose=1,
-        class_weight={0: 1, 1: 2}
+        verbose=1
     )
     
     train_time = time.time() - start_time

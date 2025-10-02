@@ -1,2 +1,5 @@
 /saved_models_20250923_164228
 model_comparison_results.csv
+.DS_Store
+improved_model_results_20251002_140929.csv
+best_lstm_model.h5
