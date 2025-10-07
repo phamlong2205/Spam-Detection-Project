@@ -125,10 +125,34 @@ def load_dataset(path: str, dataset_type: str) -> pd.DataFrame:
             "Columns found:\n- " + "\n- ".join(f"{oc} -> {norm_map[oc]}" for oc in orig_cols)
         )
 
-    out = pd.DataFrame({
+    # Create output DataFrame with email metadata preserved
+    out_data = {
         "label": df[label_col].astype(str).str.strip().str.lower(),
         "message": msg_series.astype(str)
-    })
+    }
+    
+    # Preserve email metadata for comprehensive feature engineering
+    if subject_col and subject_col in df.columns:
+        out_data["subject"] = df[subject_col].astype(str)
+        out_data["message_type"] = "email"
+    else:
+        out_data["message_type"] = "sms"  # Default for non-email or email without subject
+    
+    # Check for other email metadata columns
+    from_candidates = ["from", "sender", "from_address", "email_from"]
+    reply_to_candidates = ["reply-to", "reply_to", "replyto", "reply_to_address"]
+    
+    for from_col in from_candidates:
+        if from_col in df.columns:
+            out_data["from_address"] = df[from_col].astype(str)
+            break
+    
+    for reply_col in reply_to_candidates:
+        if reply_col in df.columns:
+            out_data["reply_to_address"] = df[reply_col].astype(str)
+            break
+    
+    out = pd.DataFrame(out_data)
 
     # Normalize various encodings to 'ham'/'spam'
     out["label"] = out["label"].replace({

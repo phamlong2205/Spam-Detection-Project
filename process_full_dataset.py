@@ -3,7 +3,7 @@ import os
 from pathlib import Path
 import pandas as pd
 from sklearn.utils import shuffle
-from feature_engineering_pipeline import apply_feature_engineering  # creates 'cleaned_message' etc.
+from feature_engineering_pipeline import apply_comprehensive_feature_engineering  # Use comprehensive features
 from src.spam_detection.data_filters import is_dirty_row  # your filter
 
 DATA_DIR = Path("data")
@@ -62,8 +62,30 @@ def main():
     for p in inputs:
         print(" -", p)
 
-    # 1) Read & merge
-    dfs = [pd.read_csv(p) for p in inputs]
+    # 1) Read & merge, handling different column structures
+    dfs = []
+    for p in inputs:
+        df_temp = pd.read_csv(p)
+        # Ensure all DataFrames have consistent columns for merging
+        required_cols = ['label', 'message']
+        optional_cols = ['subject', 'message_type', 'from_address', 'reply_to_address']
+        
+        # Add missing optional columns with default values
+        for col in optional_cols:
+            if col not in df_temp.columns:
+                if col == 'message_type':
+                    # Detect message type from filename or data characteristics
+                    if 'sms' in p.name.lower():
+                        df_temp[col] = 'sms'
+                    elif 'email' in p.name.lower():
+                        df_temp[col] = 'email'
+                    else:
+                        df_temp[col] = 'sms'  # default
+                else:
+                    df_temp[col] = None  # Default for subject, from_address, reply_to_address
+        
+        dfs.append(df_temp)
+    
     df = pd.concat(dfs, ignore_index=True)
 
     # 2) Sanity & cleanup of schema
@@ -84,8 +106,36 @@ def main():
     # 5) Save combined raw (report appendix / traceability)
     safe_to_csv(df, OUT_COMBINED)
 
-    # 6) Build features (uses your pipeline; produces cleaned_message & numeric features)
-    df_feat = apply_feature_engineering(df, message_column="message", inplace=False)
+    # 6) Build features using comprehensive pipeline (handles both SMS and email features)
+    print("🔧 Applying comprehensive feature engineering...")
+    
+    # Check what email metadata columns we actually have
+    has_subject = 'subject' in df.columns and df['subject'].notna().any()
+    has_message_type = 'message_type' in df.columns
+    has_from = 'from_address' in df.columns and df['from_address'].notna().any()
+    has_reply_to = 'reply_to_address' in df.columns and df['reply_to_address'].notna().any()
+    
+    print(f"📊 Dataset analysis:")
+    print(f"   - Total messages: {len(df)}")
+    print(f"   - Has subjects: {has_subject}")
+    print(f"   - Has message types: {has_message_type}")
+    print(f"   - Has from addresses: {has_from}")
+    print(f"   - Has reply-to addresses: {has_reply_to}")
+    
+    if has_message_type:
+        print(f"   - Message type distribution: {df['message_type'].value_counts().to_dict()}")
+    
+    print("📧 Using comprehensive feature engineering with available metadata...")
+    df_feat = apply_comprehensive_feature_engineering(
+        df, 
+        message_column="message", 
+        message_type_column="message_type" if has_message_type else None,
+        subject_column="subject" if has_subject else None,
+        from_column="from_address" if has_from else None,
+        reply_to_column="reply_to_address" if has_reply_to else None,
+        inplace=False
+    )
+    
     safe_to_csv(df_feat, OUT_FEATURES)
 
     # 7) Remove “dirty” rows using your heuristic filter
