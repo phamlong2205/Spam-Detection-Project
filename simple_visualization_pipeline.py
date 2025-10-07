@@ -176,7 +176,7 @@ class SimpleSpamVisualizer:
         ax9.set_title('Text Analysis', fontweight='bold')
         
         plt.tight_layout()
-        plt.savefig('simple_dataset_analysis.png', dpi=300, bbox_inches='tight')
+        plt.savefig('visualization/simple_dataset_analysis.png', dpi=300, bbox_inches='tight')
         print("Dataset analysis saved: simple_dataset_analysis.png")
         
         return fig
@@ -307,7 +307,7 @@ class SimpleSpamVisualizer:
         ax6.set_title('📋 Executive Summary', fontweight='bold')
         
         plt.tight_layout()
-        plt.savefig('simple_model_comparison.png', dpi=300, bbox_inches='tight')
+        plt.savefig('visualization/simple_model_comparison.png', dpi=300, bbox_inches='tight')
         print("Model comparison saved: simple_model_comparison.png")
         
         return fig
@@ -388,7 +388,7 @@ class SimpleSpamVisualizer:
         ax4.set_title('📋 Training Summary', fontweight='bold')
         
         plt.tight_layout()
-        plt.savefig('simple_training_progress.png', dpi=300, bbox_inches='tight')
+        plt.savefig('visualization/simple_training_progress.png', dpi=300, bbox_inches='tight')
         print("Training progress saved: simple_training_progress.png")
         
         return fig
