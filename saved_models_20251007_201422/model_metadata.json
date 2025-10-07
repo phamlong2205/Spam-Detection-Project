@@ -1,0 +1,21 @@
+{
+  "timestamp": "20251007_201422",
+  "max_sequence_length": 143,
+  "vocab_size": 84662,
+  "feature_count": {
+    "tfidf_selected": 800,
+    "numerical": 5,
+    "boolean": 1
+  },
+  "models_included": [
+    "Random Forest",
+    "SVM",
+    "LSTM"
+  ],
+  "preprocessing_pipeline": [
+    "TF-IDF Vectorization",
+    "Feature Selection (SelectKBest)",
+    "Standard Scaling",
+    "LSTM Tokenization"
+  ]
+}

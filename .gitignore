@@ -3,3 +3,9 @@ model_comparison_results.csv
 .DS_Store
 improved_model_results_20251002_140929.csv
 best_lstm_model.h5
+improved_model_results_20251007_191019.csv
+improved_model_results_20251007_192419.csv
+improved_model_results_20251007_193015.csv
+improved_model_results_20251007_195643.csv
+saved_models_20251007_201422/lstm_model.h5
+saved_models_20251007_201804/lstm_model.h5
