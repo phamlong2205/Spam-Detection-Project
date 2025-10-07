@@ -68,7 +68,7 @@ def main():
         df_temp = pd.read_csv(p)
         # Ensure all DataFrames have consistent columns for merging
         required_cols = ['label', 'message']
-        optional_cols = ['subject', 'message_type', 'from_address', 'reply_to_address']
+        optional_cols = ['subject', 'message_type', 'from_address']
         
         # Add missing optional columns with default values
         for col in optional_cols:
@@ -82,7 +82,7 @@ def main():
                     else:
                         df_temp[col] = 'sms'  # default
                 else:
-                    df_temp[col] = None  # Default for subject, from_address, reply_to_address
+                    df_temp[col] = None  # Default for subject, from_address
         
         dfs.append(df_temp)
     
@@ -113,14 +113,12 @@ def main():
     has_subject = 'subject' in df.columns and df['subject'].notna().any()
     has_message_type = 'message_type' in df.columns
     has_from = 'from_address' in df.columns and df['from_address'].notna().any()
-    has_reply_to = 'reply_to_address' in df.columns and df['reply_to_address'].notna().any()
     
     print(f"📊 Dataset analysis:")
     print(f"   - Total messages: {len(df)}")
     print(f"   - Has subjects: {has_subject}")
     print(f"   - Has message types: {has_message_type}")
     print(f"   - Has from addresses: {has_from}")
-    print(f"   - Has reply-to addresses: {has_reply_to}")
     
     if has_message_type:
         print(f"   - Message type distribution: {df['message_type'].value_counts().to_dict()}")
@@ -132,7 +130,6 @@ def main():
         message_type_column="message_type" if has_message_type else None,
         subject_column="subject" if has_subject else None,
         from_column="from_address" if has_from else None,
-        reply_to_column="reply_to_address" if has_reply_to else None,
         inplace=False
     )
     

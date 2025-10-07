@@ -140,16 +140,10 @@ def load_dataset(path: str, dataset_type: str) -> pd.DataFrame:
     
     # Check for other email metadata columns
     from_candidates = ["from", "sender", "from_address", "email_from"]
-    reply_to_candidates = ["reply-to", "reply_to", "replyto", "reply_to_address"]
     
     for from_col in from_candidates:
         if from_col in df.columns:
             out_data["from_address"] = df[from_col].astype(str)
-            break
-    
-    for reply_col in reply_to_candidates:
-        if reply_col in df.columns:
-            out_data["reply_to_address"] = df[reply_col].astype(str)
             break
     
     out = pd.DataFrame(out_data)

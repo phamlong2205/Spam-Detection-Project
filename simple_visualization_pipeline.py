@@ -62,7 +62,7 @@ class ProfessionalSpamAnalyzer:
         
         self.categorical_features = [
             'subject_has_suspicious_words', 'subject_is_all_caps', 
-            'reply_to_mismatch', 'has_attachment', 'message_type'
+            'has_attachment', 'message_type'
         ]
         self.categorical_features = [f for f in self.categorical_features if f in self.df.columns]
         

@@ -411,47 +411,6 @@ def check_subject_has_suspicious_words(subject: Optional[str]) -> bool:
     return any(word in suspicious_words for word in subject_words)
 
 
-def check_reply_to_mismatch(from_address: Optional[str], reply_to_address: Optional[str]) -> bool:
-    """
-    Check if the From and Reply-To email addresses differ.
-    
-    Reply-To mismatch is a spam indicator because:
-    - Spammers use legitimate-looking From addresses but different Reply-To
-    - Phishing attempts often spoof From address but use attacker's Reply-To
-    - Legitimate emails typically have matching From and Reply-To
-    - Indicates potential email spoofing or deceptive practices
-    - Common in business email compromise (BEC) attacks
-    
-    Args:
-        from_address (str, optional): Email From header address
-        reply_to_address (str, optional): Email Reply-To header address
-        
-    Returns:
-        bool: True if addresses exist and differ, False otherwise
-        
-    Example:
-        >>> check_reply_to_mismatch("support@bank.com", "scammer@evil.com")
-        True
-        >>> check_reply_to_mismatch("john@company.com", "john@company.com")
-        False
-        >>> check_reply_to_mismatch(None, None)  # SMS case
-        False
-    """
-    # Return False if either address is missing (including SMS case)
-    if not from_address or not reply_to_address:
-        return False
-    
-    if not isinstance(from_address, str) or not isinstance(reply_to_address, str):
-        return False
-    
-    # Normalize addresses for comparison (strip whitespace, convert to lowercase)
-    from_clean = from_address.strip().lower()
-    reply_to_clean = reply_to_address.strip().lower()
-    
-    # Return True if addresses differ
-    return from_clean != reply_to_clean
-
-
 def check_has_attachment(attachment_count: Optional[int] = None, attachment_list: Optional[List[str]] = None) -> bool:
     """
     Check if the email has attachments.
@@ -494,7 +453,6 @@ def extract_comprehensive_features(message: str,
                                  message_type: str = 'sms',
                                  subject: Optional[str] = None,
                                  from_address: Optional[str] = None,
-                                 reply_to_address: Optional[str] = None,
                                  attachment_count: Optional[int] = None,
                                  attachment_list: Optional[List[str]] = None) -> dict:
     """
@@ -509,7 +467,6 @@ def extract_comprehensive_features(message: str,
         message_type (str): Type of message ('email' or 'sms')
         subject (str, optional): Email subject line (email only)
         from_address (str, optional): Email From header (email only)
-        reply_to_address (str, optional): Email Reply-To header (email only)
         attachment_count (int, optional): Number of attachments (email only)
         attachment_list (List[str], optional): List of attachment names (email only)
         
@@ -525,7 +482,6 @@ def extract_comprehensive_features(message: str,
             - max_consecutive_special_chars (int): Longest special character sequence
             - subject_is_all_caps (bool): True if subject is all caps
             - subject_has_suspicious_words (bool): True if subject has spam words
-            - reply_to_mismatch (bool): True if From/Reply-To differ
             - has_attachment (bool): True if email has attachments
     """
     features = {}
@@ -546,13 +502,11 @@ def extract_comprehensive_features(message: str,
     if message_type.lower() == 'email':
         features['subject_is_all_caps'] = check_subject_is_all_caps(subject)
         features['subject_has_suspicious_words'] = check_subject_has_suspicious_words(subject)
-        features['reply_to_mismatch'] = check_reply_to_mismatch(from_address, reply_to_address)
         features['has_attachment'] = check_has_attachment(attachment_count, attachment_list)
     else:
         # SMS defaults
         features['subject_is_all_caps'] = False
         features['subject_has_suspicious_words'] = False
-        features['reply_to_mismatch'] = False
         features['has_attachment'] = False
     
     return features
@@ -642,7 +596,6 @@ def apply_comprehensive_feature_engineering(df: pd.DataFrame,
                                           message_type_column: Optional[str] = None,
                                           subject_column: Optional[str] = None,
                                           from_column: Optional[str] = None,
-                                          reply_to_column: Optional[str] = None,
                                           attachment_count_column: Optional[str] = None,
                                           attachment_list_column: Optional[str] = None,
                                           inplace: bool = False) -> pd.DataFrame:
@@ -658,7 +611,6 @@ def apply_comprehensive_feature_engineering(df: pd.DataFrame,
         message_type_column (str, optional): Column indicating 'email' or 'sms'
         subject_column (str, optional): Column containing email subjects
         from_column (str, optional): Column containing From addresses
-        reply_to_column (str, optional): Column containing Reply-To addresses
         attachment_count_column (str, optional): Column containing attachment counts
         attachment_list_column (str, optional): Column containing attachment lists
         inplace (bool): Whether to modify DataFrame in place
@@ -687,7 +639,6 @@ def apply_comprehensive_feature_engineering(df: pd.DataFrame,
         # Get optional email fields
         subject = row[subject_column] if subject_column and subject_column in df.columns else None
         from_addr = row[from_column] if from_column and from_column in df.columns else None
-        reply_to = row[reply_to_column] if reply_to_column and reply_to_column in df.columns else None
         attach_count = row[attachment_count_column] if attachment_count_column and attachment_count_column in df.columns else None
         attach_list = row[attachment_list_column] if attachment_list_column and attachment_list_column in df.columns else None
         
@@ -697,7 +648,6 @@ def apply_comprehensive_feature_engineering(df: pd.DataFrame,
             message_type=msg_type,
             subject=subject,
             from_address=from_addr,
-            reply_to_address=reply_to,
             attachment_count=attach_count,
             attachment_list=attach_list
         )
@@ -766,7 +716,7 @@ def analyze_features(df: pd.DataFrame, label_column: Optional[str] = None) -> No
             print(group_stats)
     
     # Boolean feature analysis if they exist
-    boolean_features = ['subject_is_all_caps', 'subject_has_suspicious_words', 'reply_to_mismatch', 'has_attachment']
+    boolean_features = ['subject_is_all_caps', 'subject_has_suspicious_words', 'has_attachment']
     existing_boolean_features = [f for f in boolean_features if f in df.columns]
     
     if existing_boolean_features:
@@ -884,7 +834,6 @@ def demonstrate_pipeline():
         'message_type': 'email',
         'subject': 'FREE MONEY WINNER!!!',
         'from_address': 'support@bank.com',
-        'reply_to_address': 'scammer@evil.com',
         'attachment_count': 1
     }
     
