@@ -31,6 +31,7 @@ A machine learning system for detecting spam in SMS messages and emails using na
 |-------|----------|-----------|--------|----------|---------------|
 | **SVM** | **96.85%** | 96.40% | 95.85% | **96.12%** | 107.8s |
 | **Random Forest** | 94.56% | **94.06%** | 93.66% | 93.86% | 1.2s |
+| **LSTM** | 96.33% | 95.85% | **95.85%** | 95.85% | 530.6s |
 
 *Results based on comprehensive evaluation with stratified cross-validation*
 
@@ -262,39 +263,6 @@ python process_full_dataset.py
 python simple_visualization_pipeline.py
 ```
 
-## 🤝 Contributing
-
-Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
-
-**Quick contribution steps:**
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes  
-4. Test the pipeline still works
-5. Submit a pull request
-
-## 📝 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙋‍♂️ Support
-
-- **Documentation**: Check the `/docs` folder for detailed API documentation
-- **Issues**: Report bugs and request features via [GitHub Issues](https://github.com/yourusername/spam-detection-project/issues)
-- **Discussions**: Join our [GitHub Discussions](https://github.com/yourusername/spam-detection-project/discussions) for questions and community support
-
-## 🎓 Citations
-
-If you use this project in your research, please cite:
-
-```bibtex
-@software{spam_detection_system,
-  title={Advanced SMS & Email Spam Detection System},
-  author={Your Name},
-  year={2024},
-  url={https://github.com/yourusername/spam-detection-project}
-}
-```
 
 ## 📊 Datasets
 
