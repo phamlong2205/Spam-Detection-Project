@@ -1,22 +1,20 @@
 # 🚀 SMS & Email Spam Detection System
 
 [![Python 3.8+](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/downloads/)
-[![TensorFlow 2.15+](https://img.shields.io/badge/TensorFlow-2.15+-orange.svg)](https://tensorflow.org/)
 [![scikit-learn 1.5+](https://img.shields.io/badge/scikit--learn-1.5+-green.svg)](https://scikit-learn.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A machine learning system for detecting spam in SMS messages and emails using natural language processing and deep learning techniques. This project implements multiple algorithms with overfitting prevention, comprehensive feature engineering, and statistical analysis.
+A machine learning system for detecting spam in SMS messages and emails using natural language processing and classical machine learning techniques. This project implements multiple algorithms with overfitting prevention, comprehensive feature engineering, and statistical analysis.
 
 ## 🎯 Key Features
 
 ### 🤖 **Machine Learning Models**
-- **Deep Learning**: LSTM neural networks with dropout regularization
 - **Classical ML**: SVM, Random Forest, Logistic Regression, Naive Bayes  
 - **Overfitting Prevention**: SMOTE balancing, feature selection, cross-validation
 - **Model Persistence**: Complete model serialization with preprocessing pipelines
 
 ### 📊 **Data Analysis & Visualization**
-- **Performance Metrics**: Accuracy (97.9%+), Precision, Recall, F1-Score
+- **Performance Metrics**: Accuracy (94-97%), Precision, Recall, F1-Score
 - **Statistical Testing**: Mann-Whitney U, Chi-square, Kolmogorov-Smirnov tests
 - **Professional Visualizations**: Distribution plots, correlation analysis, ROC curves
 - **Model Comparison**: Side-by-side performance benchmarking
@@ -31,9 +29,8 @@ A machine learning system for detecting spam in SMS messages and emails using na
 
 | Model | Accuracy | Precision | Recall | F1-Score | Training Time |
 |-------|----------|-----------|--------|----------|---------------|
-| **SVM** | **97.94%** | 92.57% | 91.95% | **92.26%** | 0.37s |
-| **Random Forest** | 97.85% | **95.62%** | 87.92% | 91.61% | 0.18s |
-| **LSTM** | 97.76% | 93.06% | **89.93%** | 91.47% | 10.78s |
+| **SVM** | **96.85%** | 96.40% | 95.85% | **96.12%** | 107.8s |
+| **Random Forest** | 94.56% | **94.06%** | 93.66% | 93.86% | 1.2s |
 
 *Results based on comprehensive evaluation with stratified cross-validation*
 
@@ -46,7 +43,7 @@ A machine learning system for detecting spam in SMS messages and emails using na
 ### Quick Setup with Anaconda
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/spam-detection-project.git
+git clone https://github.com/phamlong2205/Spam-Detection-Project
 cd spam-detection-project
 
 # Create environment from file
@@ -67,7 +64,7 @@ conda activate spam-detection
 
 # Install packages
 conda install -c conda-forge numpy pandas scikit-learn matplotlib seaborn nltk -y
-pip install tensorflow>=2.15.0 imbalanced-learn beautifulsoup4
+pip install imbalanced-learn beautifulsoup4
 ```
 
 ## 📁 Project Structure
@@ -94,9 +91,10 @@ spam-detection-project/
 ├── 💾 saved_models_*/                    # Trained model artifacts
 │   ├── svm_model.joblib                 # Serialized SVM model
 │   ├── random_forest_model.joblib       # Serialized Random Forest model
-│   ├── lstm_model.h5                    # LSTM neural network
 │   ├── tfidf_vectorizer.joblib          # Text vectorizer
 │   ├── feature_selector.joblib          # Feature selector
+│   ├── standard_scaler.joblib           # Feature scaler
+│   ├── label_encoder.joblib             # Label encoder
 │   ├── model_metadata.json              # Model configuration
 │   └── README_model_loading.md          # Model loading instructions
 │
@@ -128,17 +126,16 @@ python simple_visualization_pipeline.py
 ### Load Pre-trained Models
 ```python
 import joblib
-from tensorflow.keras.models import load_model
 
-# Load the best performing model (SVM - 97.94% accuracy)
+# Load the best performing model (SVM - 96.85% accuracy)
 svm_model = joblib.load('saved_models_TIMESTAMP/svm_model.joblib')
 tfidf_vectorizer = joblib.load('saved_models_TIMESTAMP/tfidf_vectorizer.joblib')
+feature_selector = joblib.load('saved_models_TIMESTAMP/feature_selector.joblib')
 scaler = joblib.load('saved_models_TIMESTAMP/standard_scaler.joblib')
+label_encoder = joblib.load('saved_models_TIMESTAMP/label_encoder.joblib')
 
-# Load LSTM model (97.76% accuracy)
-lstm_model = load_model('saved_models_TIMESTAMP/lstm_model.h5')
-with open('saved_models_TIMESTAMP/lstm_tokenizer.pickle', 'rb') as f:
-    tokenizer = pickle.load(f)
+# Load Random Forest model (94.56% accuracy)
+rf_model = joblib.load('saved_models_TIMESTAMP/random_forest_model.joblib')
 ```
 
 ## 📊 Usage Examples
@@ -243,7 +240,6 @@ saved_models_TIMESTAMP/ (serialized models + preprocessors)
 ### Environment Variables
 Set these for optimal performance:
 ```bash
-export TF_CPP_MIN_LOG_LEVEL=2        # Reduce TensorFlow logs
 export CUDA_VISIBLE_DEVICES=0        # GPU usage (if available)
 export OPENBLAS_NUM_THREADS=4        # CPU optimization
 ```

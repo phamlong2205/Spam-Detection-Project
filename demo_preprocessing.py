@@ -2,7 +2,7 @@ from pathlib import Path
 import pandas as pd
 from typing import Optional
 from src.spam_detection.email_preprocessor import clean_email_text
-# (optional) show a preview using the unified normalizer if you added it
+
 try:
     from src.spam_detection.preprocessing import preprocess_text_unified
 except Exception:
@@ -49,7 +49,7 @@ def load_dataset(path: str, dataset_type: str) -> pd.DataFrame:
     if dataset_type != "email":
         raise ValueError("dataset_type must be 'sms' or 'email'.")
 
-    # ---- EMAIL: normalize headers to lower, strip spaces
+    # EMAIL: normalize headers to lower, strip spaces
     orig_cols = list(df.columns)
     norm_map = {c: c.strip().lower() for c in df.columns}
     df.rename(columns=norm_map, inplace=True)
@@ -90,7 +90,7 @@ def load_dataset(path: str, dataset_type: str) -> pd.DataFrame:
             "Columns found:\n- " + "\n- ".join(f"{oc} -> {norm_map[oc]}" for oc in orig_cols)
         )
 
-    # 2) Find text columns (prefer body, else subject, else longest text-like)
+    # Find text columns (prefer body, else subject, else longest text-like)
     text_candidates = ["message", "text", "body", "content", "raw", "emailtext", "mail"]
     subject_col = "subject" if "subject" in cols else None
     body_col = next((c for c in text_candidates if c in cols), None)
@@ -171,14 +171,14 @@ if __name__ == "__main__":
 
     DATA_DIR.mkdir(exist_ok=True)
 
-    # --- SMS ---
+    # SMS 
     sms_df = load_dataset("spam.csv", dataset_type="sms")
     print(f"SMS shape: {sms_df.shape}")
     print(sms_df["label"].value_counts())
     sms_out = DATA_DIR / "sms_messages_normalized.csv"
     sms_df.to_csv(sms_out, index=False, encoding="utf-8")
 
-    # --- Enron email ---
+    #  Enron email
     email_df = load_dataset("enron_spam_data.csv", dataset_type="email")
     print("-" * 40)
     print(f"Enron Email shape: {email_df.shape}")
@@ -186,7 +186,7 @@ if __name__ == "__main__":
     email_out = DATA_DIR / "email_messages_normalized.csv"
     email_df.to_csv(email_out, index=False, encoding="utf-8")
 
-    # --- Optional: a third email dataset: emails.csv ---
+    # a third email dataset: emails.csv
     try:
         emails_extra = load_dataset("emails.csv", dataset_type="email")
         print("-" * 40)

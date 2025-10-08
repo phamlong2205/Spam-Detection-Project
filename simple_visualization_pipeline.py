@@ -47,7 +47,7 @@ class ProfessionalSpamAnalyzer:
         
     def load_data(self):
         """Load and prepare the dataset with feature categorization."""
-        print("📊 Loading dataset for professional analysis...")
+        print("Loading dataset for professional analysis...")
         self.df = pd.read_csv(self.data_path)
         
         # Encode target for statistical analysis
@@ -66,9 +66,9 @@ class ProfessionalSpamAnalyzer:
         ]
         self.categorical_features = [f for f in self.categorical_features if f in self.df.columns]
         
-        print(f"✅ Dataset loaded: {self.df.shape[0]:,} samples, {self.df.shape[1]} features")
-        print(f"📈 Numerical features: {len(self.numerical_features)}")
-        print(f"📋 Categorical features: {len(self.categorical_features)}")
+        print(f"Dataset loaded: {self.df.shape[0]:,} samples, {self.df.shape[1]} features")
+        print(f"Numerical features: {len(self.numerical_features)}")
+        print(f"Categorical features: {len(self.categorical_features)}")
     
     def calculate_statistical_significance(self):
         """Calculate comprehensive statistical significance tests."""
@@ -129,7 +129,7 @@ class ProfessionalSpamAnalyzer:
         
     def create_comprehensive_eda(self):
         """Create professional-grade exploratory data analysis dashboard."""
-        print("\n🎨 Creating Professional EDA Dashboard...")
+        print("\nCreating Professional EDA Dashboard...")
         
         # Calculate statistical significance first
         self.calculate_statistical_significance()
@@ -161,7 +161,7 @@ class ProfessionalSpamAnalyzer:
         
         bars = ax1.barh(features, correlations, color=colors, alpha=0.8, edgecolor='black', linewidth=0.5)
         ax1.set_xlabel('Correlation with Spam Label', fontweight='bold', fontsize=12)
-        ax1.set_title('📊 FEATURE-TO-TARGET CORRELATIONS\n(Predictive Power Analysis)', 
+        ax1.set_title('FEATURE-TO-TARGET CORRELATIONS\n(Predictive Power Analysis)', 
                      fontweight='bold', fontsize=14, pad=20)
         ax1.axvline(x=0, color='black', linestyle='-', alpha=0.3)
         ax1.grid(True, alpha=0.3, axis='x')
@@ -273,7 +273,7 @@ class ProfessionalSpamAnalyzer:
                        square=True, ax=ax4, fmt='.3f', cbar_kws={'label': 'Correlation Coefficient'},
                        linewidths=0.5, cbar=True)
             
-            ax4.set_title('📈 CORRELATION MATRIX\n(Feature Relationships & Target Correlations)', 
+            ax4.set_title('CORRELATION MATRIX\n(Feature Relationships & Target Correlations)', 
                          fontweight='bold', fontsize=14, pad=20)
         
         # 5. Class Distribution with Advanced Statistics
@@ -292,7 +292,7 @@ class ProfessionalSpamAnalyzer:
                     f'{count:,}\n{count/len(self.df)*100:.1f}%',
                     ha='center', va='bottom', fontweight='bold')
         
-        ax5.set_title('📊 CLASS DISTRIBUTION ANALYSIS', fontweight='bold', fontsize=14)
+        ax5.set_title('CLASS DISTRIBUTION ANALYSIS', fontweight='bold', fontsize=14)
         ax5.set_ylabel('Count', fontweight='bold')
         ax5.grid(True, alpha=0.3, axis='y')
         
@@ -319,7 +319,7 @@ class ProfessionalSpamAnalyzer:
             ax6.set_yticks(range(len(features_sorted)))
             ax6.set_yticklabels(features_sorted, fontsize=9)
             ax6.set_xlabel('|Correlation|')
-            ax6.set_title('🏆 FEATURE\nIMPORTANCE\nRANKING', fontweight='bold', fontsize=12)
+            ax6.set_title('FEATURE\nIMPORTANCE\nRANKING', fontweight='bold', fontsize=12)
             ax6.grid(True, alpha=0.3, axis='x')
             
             # Add values
@@ -359,7 +359,7 @@ class ProfessionalSpamAnalyzer:
         
         ax7.set_xticks([1.5, 4.5, 7.5])
         ax7.set_xticklabels([f.replace('_', '\n') for f in top_features], fontsize=10)
-        ax7.set_title('📋 OUTLIER DETECTION ANALYSIS\n(Top 3 Predictive Features)', 
+        ax7.set_title('OUTLIER DETECTION ANALYSIS\n(Top 3 Predictive Features)', 
                      fontweight='bold', fontsize=14)
         ax7.grid(True, alpha=0.3)
         
@@ -397,7 +397,7 @@ class ProfessionalSpamAnalyzer:
             
             ax8.set_xlabel('Features', fontweight='bold')
             ax8.set_ylabel('Percentage', fontweight='bold')
-            ax8.set_title('🔍 DATA QUALITY ASSESSMENT', fontweight='bold', fontsize=14)
+            ax8.set_title('DATA QUALITY ASSESSMENT', fontweight='bold', fontsize=14)
             ax8.set_xticks(x)
             ax8.set_xticklabels(feature_names_clean, fontsize=9)
             ax8.legend()
@@ -416,14 +416,14 @@ class ProfessionalSpamAnalyzer:
         ax9.axis('off')
         
         # Generate executive summary
-        executive_summary = "🎯 EXECUTIVE SUMMARY\n" + "="*25 + "\n\n"
+        executive_summary = "EXECUTIVE SUMMARY\n" + "="*25 + "\n\n"
         
         # Dataset overview
         total_samples = len(self.df)
         ham_count = len(self.df[self.df['label'] == 'ham'])
         spam_count = len(self.df[self.df['label'] == 'spam'])
         
-        executive_summary += f"📊 DATASET OVERVIEW:\n"
+        executive_summary += f"DATASET OVERVIEW:\n"
         executive_summary += f"• Total samples: {total_samples:,}\n"
         executive_summary += f"• Ham messages: {ham_count:,} ({ham_count/total_samples*100:.1f}%)\n"
         executive_summary += f"• Spam messages: {spam_count:,} ({spam_count/total_samples*100:.1f}%)\n"
@@ -433,12 +433,12 @@ class ProfessionalSpamAnalyzer:
         significant_features = [f for f, r in self.statistical_results.items() if r.get('significant', False)]
         strong_correlations = [f for f, c in feature_correlations.items() if abs(c) > 0.2]
         
-        executive_summary += f"🔍 FEATURE ANALYSIS:\n"
+        executive_summary += f"FEATURE ANALYSIS:\n"
         executive_summary += f"• Significant features: {len(significant_features)}/{len(self.numerical_features)}\n"
         executive_summary += f"• Strong predictors (|r|>0.2): {len(strong_correlations)}\n\n"
         
         # Top insights
-        executive_summary += f"🏆 KEY INSIGHTS:\n"
+        executive_summary += f"KEY INSIGHTS:\n"
         if sorted_features:
             top_feature = sorted_features[0][0].replace('_', ' ').title()
             top_corr = sorted_features[0][1]
@@ -456,13 +456,13 @@ class ProfessionalSpamAnalyzer:
         
         plt.tight_layout()
         plt.savefig('visualization/professional_eda_report.png', dpi=300, bbox_inches='tight')
-        print("✅ Professional EDA report saved: professional_eda_report.png")
+        print("Professional EDA report saved: professional_eda_report.png")
         
         return fig
     
     def create_spam_correlation_heatmap(self):
         """Create focused heatmap showing feature correlations with spam label."""
-        print("\n🎯 Creating Spam Correlation Heatmap...")
+        print("\nCreating Spam Correlation Heatmap...")
         
         # Calculate statistical significance first
         if not self.statistical_results:
@@ -502,7 +502,7 @@ class ProfessionalSpamAnalyzer:
                     if not np.isnan(corr):
                         feature_correlations[feature] = corr
                 except Exception as e:
-                    print(f"⚠️  Error processing {feature}: {str(e)}")
+                    print(f"Error processing {feature}: {str(e)}")
                     continue
         
         # Sort by absolute correlation strength
@@ -551,7 +551,7 @@ class ProfessionalSpamAnalyzer:
         cbar = plt.colorbar(im, ax=ax1, shrink=0.8)
         cbar.set_label('Correlation Coefficient', fontweight='bold', fontsize=12)
         
-        ax1.set_title('🎯 FEATURE-TO-SPAM CORRELATIONS\n(Ranked by Predictive Power)', 
+        ax1.set_title('FEATURE-TO-SPAM CORRELATIONS\n(Ranked by Predictive Power)', 
                      fontweight='bold', fontsize=14, pad=20)
         
         # Add significance legend
@@ -603,24 +603,24 @@ class ProfessionalSpamAnalyzer:
         ax2.text(0.05, 0.95, table_text, transform=ax2.transAxes, fontsize=10, 
                 verticalalignment='top', fontfamily='monospace',
                 bbox=dict(boxstyle='round', facecolor='lightcyan', alpha=0.9))
-        ax2.set_title('📊 Statistical Analysis', fontweight='bold', fontsize=14)
+        ax2.set_title('Statistical Analysis', fontweight='bold', fontsize=14)
         
         plt.tight_layout()
         plt.savefig('visualization/spam_correlation_heatmap.png', dpi=300, bbox_inches='tight')
-        print("✅ Spam correlation heatmap saved: spam_correlation_heatmap.png")
+        print("Spam correlation heatmap saved: spam_correlation_heatmap.png")
         
         return fig, feature_correlations
     
     def create_simple_correlation_matrix(self):
         """Create simple correlation matrix heatmap with spam label."""
-        print("\n🎯 Creating Simple Correlation Matrix with Spam Label...")
+        print("\nCreating Simple Correlation Matrix with Spam Label...")
         
         # Select all available numerical features plus target
         features_for_matrix = self.numerical_features + ['target_encoded']
         available_features = [f for f in features_for_matrix if f in self.df.columns]
         
         if len(available_features) < 2:
-            print("⚠️  Not enough features for correlation matrix")
+            print("Not enough features for correlation matrix")
             return None
         
         # Calculate correlation matrix
@@ -651,22 +651,22 @@ class ProfessionalSpamAnalyzer:
         plt.xticks(range(len(feature_labels)), feature_labels, rotation=45, ha='right')
         plt.yticks(range(len(feature_labels)), feature_labels, rotation=0)
         
-        plt.title('🔗 Feature Correlations with Spam Label', 
+        plt.title('Feature Correlations with Spam Label', 
                  fontsize=16, fontweight='bold', pad=20)
         
         plt.tight_layout()
         plt.savefig('visualization/simple_correlation_matrix.png', dpi=300, bbox_inches='tight')
-        print("✅ Simple correlation matrix saved: simple_correlation_matrix.png")
+        print("Simple correlation matrix saved: simple_correlation_matrix.png")
         
         # Print correlation summary
-        print(f"\n📊 CORRELATION MATRIX SUMMARY:")
+        print(f"\nCORRELATION MATRIX SUMMARY:")
         print(f"Features included: {len(available_features)}")
         
         if 'target_encoded' in corr_matrix.columns:
             spam_correlations = corr_matrix['target_encoded'].drop('target_encoded')
             spam_correlations = spam_correlations.sort_values(key=abs, ascending=False)
             
-            print(f"\n🎯 CORRELATIONS WITH SPAM LABEL:")
+            print(f"\nCORRELATIONS WITH SPAM LABEL:")
             for feature, corr in spam_correlations.items():
                 strength = "Strong" if abs(corr) > 0.3 else "Moderate" if abs(corr) > 0.1 else "Weak"
                 print(f"• {feature.replace('_', ' ').title():<25}: {corr:+.3f} ({strength})")
@@ -729,7 +729,7 @@ class ProfessionalSpamAnalyzer:
         bars = ax2.bar(results_df['Model'], results_df['F1_Gap'], color=colors, alpha=0.7)
         ax2.set_xlabel('Models')
         ax2.set_ylabel('F1 Gap (Val - Test)')
-        ax2.set_title('🔍 Overfitting Analysis', fontweight='bold')
+        ax2.set_title('Overfitting Analysis', fontweight='bold')
         ax2.tick_params(axis='x', rotation=45)
         ax2.axhline(y=0.01, color='orange', linestyle='--', alpha=0.5)
         ax2.axhline(y=0.02, color='red', linestyle='--', alpha=0.5)
@@ -767,14 +767,14 @@ class ProfessionalSpamAnalyzer:
         ax4.text(0.05, 0.95, rankings_text, transform=ax4.transAxes, 
                 fontsize=11, verticalalignment='top', fontfamily='monospace',
                 bbox=dict(boxstyle='round', facecolor='lightgreen', alpha=0.8))
-        ax4.set_title('🏅 Rankings & Recommendations', fontweight='bold')
+        ax4.set_title('Rankings & Recommendations', fontweight='bold')
         
         # 5. Training Time Breakdown
         ax5 = axes[1, 1]
         bars = ax5.barh(results_df['Model'], results_df['Train_Time'], 
                        color=['#FF6B6B', '#4ECDC4', '#45B7D1'])
         ax5.set_xlabel('Training Time (seconds)')
-        ax5.set_title('⏱️ Training Time Comparison', fontweight='bold')
+        ax5.set_title('Training Time Comparison', fontweight='bold')
         ax5.grid(True, alpha=0.3)
         
         # Add time labels
@@ -801,7 +801,7 @@ class ProfessionalSpamAnalyzer:
         ax6.text(0.05, 0.95, summary_text, transform=ax6.transAxes, 
                 fontsize=10, verticalalignment='top', fontfamily='monospace',
                 bbox=dict(boxstyle='round', facecolor='lightcoral', alpha=0.8))
-        ax6.set_title('📋 Executive Summary', fontweight='bold')
+        ax6.set_title('Executive Summary', fontweight='bold')
         
         plt.tight_layout()
         plt.savefig('visualization/simple_model_comparison.png', dpi=300, bbox_inches='tight')
@@ -882,7 +882,7 @@ class ProfessionalSpamAnalyzer:
         ax4.text(0.05, 0.95, summary_text, transform=ax4.transAxes, 
                 fontsize=11, verticalalignment='top', fontfamily='monospace',
                 bbox=dict(boxstyle='round', facecolor='lightyellow', alpha=0.8))
-        ax4.set_title('📋 Training Summary', fontweight='bold')
+        ax4.set_title('Training Summary', fontweight='bold')
         
         plt.tight_layout()
         plt.savefig('visualization/simple_training_progress.png', dpi=300, bbox_inches='tight')
@@ -945,11 +945,11 @@ def main():
         except Exception as e:
             print(f"⚠️  Model comparison skipped: {str(e)}")
         
-        print("\n✅ ANALYSIS COMPLETED SUCCESSFULLY!")
-        print("🎨 Professional visualizations generated:")
-        print("  📊 professional_eda_report.png")
-        print("  📈 simple_model_comparison.png (if results available)")
-        print("\n💡 All visualizations use publication-quality styling")
+        print("\nANALYSIS COMPLETED SUCCESSFULLY!")
+        print("Professional visualizations generated:")
+        print(" professional_eda_report.png")
+        print("  simple_model_comparison.png (if results available)")
+        print("\nAll visualizations use publication-quality styling")
         
     except Exception as e:
         print(f"❌ Error during analysis: {str(e)}")

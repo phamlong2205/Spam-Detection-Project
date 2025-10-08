@@ -57,3 +57,4 @@ dependencies:
     - uvicorn>=0.23.0
     - pydantic>=2.0.0
     - pre-commit>=3.3.0
+

@@ -45,11 +45,11 @@ def safe_to_csv(df: pd.DataFrame, path: Path):
     try:
         df.to_csv(tmp, index=False, encoding="utf-8")
         os.replace(tmp, path)  # atomic on same volume
-        print(f"✅ Wrote {path} ({df.shape})")
+        print(f"Wrote {path} ({df.shape})")
     except PermissionError:
         alt = path.with_name(path.stem + "_new" + path.suffix)
         df.to_csv(alt, index=False, encoding="utf-8")
-        print(f"⚠️ '{path}' is locked (maybe open in Excel). Wrote '{alt}' instead ({df.shape}).")
+        print(f"'{path}' is locked (maybe open in Excel). Wrote '{alt}' instead ({df.shape}).")
         try:
             tmp.unlink(missing_ok=True)
         except Exception:
@@ -92,13 +92,13 @@ def main():
     df = df.dropna(subset=["label", "message"])
     df = df[df["label"].isin(["ham", "spam"])]
 
-    # 3) (Optional) de-duplicate identical messages (case/space-insensitive)
+    # 3) de-duplicate identical messages (case/space-insensitive)
     before = len(df)
     df["__key"] = df["message"].astype(str).str.strip().str.lower()
     df = df.drop_duplicates(subset="__key").drop(columns="__key").reset_index(drop=True)
     deduped = before - len(df)
     if deduped:
-        print(f"🧹 Deduped {deduped} duplicate messages.")
+        print(f"Deduped {deduped} duplicate messages.")
 
     # 4) Shuffle for good measure
     df = shuffle(df, random_state=42).reset_index(drop=True)
@@ -107,14 +107,14 @@ def main():
     safe_to_csv(df, OUT_COMBINED)
 
     # 6) Build features using comprehensive pipeline (handles both SMS and email features)
-    print("🔧 Applying comprehensive feature engineering...")
+    print("Applying comprehensive feature engineering...")
     
     # Check what email metadata columns we actually have
     has_subject = 'subject' in df.columns and df['subject'].notna().any()
     has_message_type = 'message_type' in df.columns
     has_from = 'from_address' in df.columns and df['from_address'].notna().any()
     
-    print(f"📊 Dataset analysis:")
+    print(f"Dataset analysis:")
     print(f"   - Total messages: {len(df)}")
     print(f"   - Has subjects: {has_subject}")
     print(f"   - Has message types: {has_message_type}")
@@ -123,7 +123,7 @@ def main():
     if has_message_type:
         print(f"   - Message type distribution: {df['message_type'].value_counts().to_dict()}")
     
-    print("📧 Using comprehensive feature engineering with available metadata...")
+    print("Using comprehensive feature engineering with available metadata...")
     df_feat = apply_comprehensive_feature_engineering(
         df, 
         message_column="message", 
@@ -140,7 +140,7 @@ def main():
     df_clean = df_feat[~df_feat.apply(is_dirty_row, axis=1)].reset_index(drop=True)
     removed = before - len(df_clean)
     pct = (removed / before * 100) if before else 0.0
-    print(f"🧽 Removed {removed} noisy rows ({pct:.2f}%).")
+    print(f"Removed {removed} noisy rows ({pct:.2f}%).")
     safe_to_csv(df_clean, OUT_FEATURES_CLEAN)
 
 

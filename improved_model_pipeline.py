@@ -97,7 +97,7 @@ def create_balanced_features(df: pd.DataFrame) -> Tuple[np.ndarray, np.ndarray, 
     
     y = df['label_encoded'].values
     
-    # === TEXT FEATURES ===
+    # TEXT FEATURES
     print("Creating text features from cleaned_message...")
     
     # Primary text: cleaned_message
