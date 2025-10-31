@@ -8,7 +8,7 @@ export default function Home() {
   return (
     <div className="card hero">
       {/* Centered title, no extra tagline */}
-      <h1 className="hero-title" style={{ textAlign: "center", marginBottom: 8 }}>
+      <h1 className="hero-title" style={{ textAlign: "center", marginBottom: 8, fontSize: '2rem', fontWeight: 600 }}>
         AI4Cyber — Spam Detector
       </h1>
 

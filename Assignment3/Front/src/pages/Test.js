@@ -124,21 +124,52 @@ export default function Test() {
     window.open(`${API}/export/predictions?format=csv`, "_blank");
   }
 
-  // client-side delete/clear (local only; backend history remains)
-  function deleteRow(idxFromTop) {
+  // Delete specific row (calls backend to permanently delete)
+  async function deleteRow(idxFromTop) {
     const arr = [...history].reverse();
-    arr.splice(idxFromTop, 1);
-    setHistory(arr.reverse());
+    const actualIndex = history.length - 1 - idxFromTop;
+    
+    try {
+      const res = await fetch(`${API}/history/${actualIndex}`, {
+        method: "DELETE",
+      });
+      
+      if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error("Failed to delete item: " + errorText);
+      }
+      
+      // Remove from local state
+      arr.splice(idxFromTop, 1);
+      setHistory(arr.reverse());
+    } catch (e) {
+      setErr(friendlyError(e));
+    }
   }
-  function clearLocal() {
-    setHistory([]);
+  
+  // Clear all history (calls backend to permanently delete)
+  async function clearLocal() {
+    try {
+      const res = await fetch(`${API}/history`, {
+        method: "DELETE",
+      });
+      
+      if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error("Failed to clear history: " + errorText);
+      }
+      
+      setHistory([]);
+    } catch (e) {
+      setErr(friendlyError(e));
+    }
   }
 
   return (
     <>
       {/* Centered, cleaner title */}
       <div className="card">
-        <h2 style={{ margin: 0, textAlign: "center" }}>
+        <h2 style={{ margin: 0, textAlign: "center", fontSize: '2rem', fontWeight: 600 }}>
           Spam Detector — Message Tester
         </h2>
 
@@ -264,7 +295,7 @@ export default function Test() {
               Export CSV
             </button>
             <button className="ghost" onClick={clearLocal} type="button">
-              Clear (local)
+              Clear All
             </button>
           </div>
         </div>
@@ -328,7 +359,7 @@ export default function Test() {
                         type="button"
                         className="btn-ghost"
                         onClick={() => deleteRow(i)}
-                        title="Remove this row locally"
+                        title="Delete this item permanently"
                       >
                         Delete
                       </button>

@@ -1,4 +1,4 @@
-// src/pages/About.js — RF training overview + 2 trust charts (images from public/assets)
+// src/pages/About.js — RF training overview + validation charts
 import { useEffect } from "react";
 
 const img = (name) => `${process.env.PUBLIC_URL}/assets/${name}`;
@@ -8,77 +8,157 @@ export default function About() {
 
   return (
     <div className="card">
-      <h2 style={{ marginTop: 0 }}>About the Model</h2>
+      <h2 style={{ 
+        marginTop: 0, 
+        fontSize: '2rem', 
+        fontWeight: 600, 
+        marginBottom: '1rem',
+        color: '#1a1a1a',
+        textAlign: 'center'
+      }}>
+        About the Model
+      </h2>
 
-      <p className="lead">
-        This app deploys a <b>Random Forest</b> to detect <b>spam</b> vs <b>ham</b>. Below is a quick
-        overview of our training pipeline and two training charts to build trust.
+      <p style={{ 
+        fontSize: '1.1rem', 
+        lineHeight: 1.8, 
+        marginBottom: '2.5rem', 
+        color: '#1a1a1a',
+        textAlign: 'center'
+      }}>
+        This app deploys a Random Forest classifier 
+        to detect spam vs ham messages. 
+        Below is an overview of our training pipeline and validation charts demonstrating model performance.
       </p>
 
-      <div className="pipeline">
+      <h3 style={{ 
+        fontSize: '2rem', 
+        fontWeight: 600, 
+        marginBottom: '1.5rem', 
+        marginTop: '2.5rem',
+        color: '#1a1a1a',
+        textAlign: 'center'
+      }}>
+        Training Pipeline
+      </h3>
+
+      <div className="pipeline" style={{ 
+        display: 'grid', 
+        gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+        gap: '1.5rem',
+        marginBottom: '2rem'
+      }}>
         <div className="step">
           <div className="step-num">1</div>
-          <div className="step-title">Collect & Clean</div>
-          <div className="step-body small">
-            Merge SMS + Email → <code>(label, message)</code>; lowercase, strip HTML/URLs, normalise spaces.
+          <div style={{ fontSize: '1.1rem', fontWeight: 600, marginBottom: '0.5rem', color: '#1a1a1a' }}>
+            Collect & Clean
+          </div>
+          <div style={{ fontSize: '0.95rem', lineHeight: 1.7, color: '#4a4a4a' }}>
+            Merge SMS and Email datasets into{' '}
+            <code style={{ 
+              padding: '2px 8px', 
+              background: '#f3f4f6', 
+              borderRadius: '4px',
+              fontSize: '0.9rem',
+              fontFamily: 'monospace'
+            }}>
+              (label, message)
+            </code>{' '}
+            format. Apply text normalisation including lowercasing, HTML/URL removal, and whitespace standardisation.
           </div>
         </div>
-        <div className="arrow">→</div>
+        
         <div className="step">
           <div className="step-num">2</div>
-          <div className="step-title">Feature Engineering</div>
-          <div className="step-body small">
-            TF-IDF (1–2 grams) + numeric signals (length, digit/capital ratios, special chars, avg word length, URL count).
+          <div style={{ fontSize: '1.1rem', fontWeight: 600, marginBottom: '0.5rem', color: '#1a1a1a' }}>
+            Feature Engineering
+          </div>
+          <div style={{ fontSize: '0.95rem', lineHeight: 1.7, color: '#4a4a4a' }}>
+            Extract TF-IDF features with 1-2 grams, combined with numeric signals: message length, 
+            digit and capital ratios, special character counts, average word length, and URL frequency.
           </div>
         </div>
-        <div className="arrow">→</div>
+        
         <div className="step">
           <div className="step-num">3</div>
-          <div className="step-title">Split & Balance</div>
-          <div className="step-body small">
-            Stratified Train/Val/Test; balance <i>train only</i> when needed (e.g., SMOTE).
+          <div style={{ fontSize: '1.1rem', fontWeight: 600, marginBottom: '0.5rem', color: '#1a1a1a' }}>
+            Split & Balance
+          </div>
+          <div style={{ fontSize: '0.95rem', lineHeight: 1.7, color: '#4a4a4a' }}>
+            Create stratified Train/Validation/Test splits. Apply SMOTE balancing to the training set only 
+            when needed to address class imbalance while keeping validation and test sets pristine.
           </div>
         </div>
-        <div className="arrow">→</div>
+        
         <div className="step">
           <div className="step-num">4</div>
-          <div className="step-title">Train & Select</div>
-          <div className="step-body small">
-            Tune RF depth/trees; SelectKBest to keep strongest features; final metrics on held-out test.
+          <div style={{ fontSize: '1.1rem', fontWeight: 600, marginBottom: '0.5rem', color: '#1a1a1a' }}>
+            Train & Select
+          </div>
+          <div style={{ fontSize: '0.95rem', lineHeight: 1.7, color: '#4a4a4a' }}>
+            Tune Random Forest hyperparameters including tree depth and estimator count. 
+            Use SelectKBest to retain the strongest features. Evaluate final metrics on the held-out test set.
           </div>
         </div>
       </div>
 
-      <div className="card" style={{ marginTop: 12 }}>
-        <h3 style={{ marginTop: 0 }}>Model Card (Short)</h3>
-        <ul className="small" style={{ lineHeight: 1.7 }}>
-          <li><b>Algorithm:</b> Random Forest</li>
-          <li><b>Vectoriser:</b> TF-IDF (1–2 grams) + numeric features</li>
-          <li><b>Primary metric:</b> F1; we also track accuracy and train–val gap</li>
-          <li><b>Serving threshold:</b> 0.50 on P(spam)</li>
-          <li><b>Why RF:</b> fast inference, robust on sparse text, low overfit gap, easy to explain</li>
-          <li><b>Limits:</b> very short/unseen obfuscated texts; OOD inputs compress probabilities</li>
+      <div className="card" style={{ marginTop: '2rem', padding: '1.5rem' }}>
+        <h3 style={{ marginTop: 0, fontSize: '2rem', fontWeight: 600, marginBottom: '1rem', color: '#1a1a1a', textAlign: 'center' }}>
+          Model Card
+        </h3>
+        <ul style={{ lineHeight: 2, fontSize: '0.95rem', color: '#4a4a4a', paddingLeft: '1.25rem' }}>
+          <li><strong>Algorithm:</strong> Random Forest Classifier</li>
+          <li><strong>Vectoriser:</strong> TF-IDF with 1-2 grams plus numeric features</li>
+          <li><strong>Primary metric:</strong> F1 Score (also tracking accuracy and train-validation gap)</li>
+          <li><strong>Serving threshold:</strong> 0.50 probability for spam classification</li>
+          <li><strong>Why Random Forest:</strong> Fast inference, robust on sparse text data, low overfitting, highly interpretable</li>
+          <li><strong>Limitations:</strong> May struggle with very short or heavily obfuscated texts; out-of-distribution inputs can compress probability scores</li>
         </ul>
       </div>
 
       {/* Two trust-building charts from public/assets */}
-      <div className="viz-grid two-cols">
-        <figure className="viz">
-          <img src={img("rf_training_loss.png")} alt="Random Forest Training & Validation Loss" />
-          <figcaption>Loss for both train and validation decreases steadily → stable learning.</figcaption>
+      <h3 style={{ 
+        fontSize: '2rem', 
+        fontWeight: 600, 
+        marginBottom: '1.5rem', 
+        marginTop: '2.5rem',
+        color: '#1a1a1a',
+        textAlign: 'center'
+      }}>
+        Training Validation Charts
+      </h3>
+
+      <div className="viz-grid two-cols" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
+        <figure className="viz" style={{ margin: 0 }}>
+          <img 
+            src={img("rf_training_loss.png")} 
+            alt="Random Forest Training & Validation Loss" 
+            style={{ width: '100%', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}
+          />
+          <figcaption style={{ fontSize: '0.9rem', color: '#6b7280', marginTop: '0.75rem', textAlign: 'center', lineHeight: 1.6 }}>
+            Loss decreases steadily for both training and validation sets, indicating stable learning without overfitting.
+          </figcaption>
         </figure>
 
-        <figure className="viz">
-          <img src={img("rf_training_accuracy.png")} alt="Random Forest Training & Validation Accuracy" />
-          <figcaption>Accuracy rises together with a small gap → good generalisation (low overfitting).</figcaption>
+        <figure className="viz" style={{ margin: 0 }}>
+          <img 
+            src={img("rf_training_accuracy.png")} 
+            alt="Random Forest Training & Validation Accuracy" 
+            style={{ width: '100%', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}
+          />
+          <figcaption style={{ fontSize: '0.9rem', color: '#6b7280', marginTop: '0.75rem', textAlign: 'center', lineHeight: 1.6 }}>
+            Accuracy rises together with minimal gap between training and validation, demonstrating excellent generalisation.
+          </figcaption>
         </figure>
       </div>
 
-      <div className="card" style={{ marginTop: 12 }}>
-        <h3 style={{ marginTop: 0 }}>Transparency & Reproducibility</h3>
-        <p className="small">
-          TF-IDF, selector (if used), and the trained RF model are saved as artefacts. The API loads them
-          to return a probability + label instantly; inputs are stored only when you click Predict (so
+      <div className="card" style={{ marginTop: '2rem', padding: '1.5rem' }}>
+        <h3 style={{ marginTop: 0, fontSize: '2rem', fontWeight: 600, marginBottom: '1rem', color: '#1a1a1a', textAlign: 'center' }}>
+          Transparency & Reproducibility
+        </h3>
+        <p style={{ fontSize: '0.95rem', lineHeight: 1.8, color: '#1a1a1a', margin: 0, textAlign: 'center' }}>
+          TF-IDF, selector (if used), and the trained RF model are saved as artefacts. The API loads them 
+          to return a probability + label instantly; inputs are stored only when you click Predict (so 
           you can see history and export CSV).
         </p>
       </div>
