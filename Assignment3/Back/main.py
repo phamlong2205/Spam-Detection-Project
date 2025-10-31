@@ -226,3 +226,33 @@ def predict_and_save(req: PredictIn):
         return res
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Prediction failed: {e}")
+
+@app.delete("/history/{index}")
+def delete_history_item(index: int):
+    """Delete a specific history item by index (0 = oldest, -1 = newest)"""
+    if not HISTORY:
+        raise HTTPException(status_code=404, detail="History is empty")
+    
+    try:
+        # Handle negative indices
+        if index < 0:
+            index = len(HISTORY) + index
+        
+        if index < 0 or index >= len(HISTORY):
+            raise HTTPException(status_code=404, detail=f"Index {index} out of range")
+        
+        deleted_item = HISTORY.pop(index)
+        _write_history(HISTORY)
+        return {"message": "Item deleted", "deleted": deleted_item}
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to delete item: {e}")
+
+@app.delete("/history")
+def clear_history():
+    """Clear all history"""
+    count = len(HISTORY)
+    HISTORY.clear()
+    _write_history(HISTORY)
+    return {"message": "History cleared", "deleted_count": count}
