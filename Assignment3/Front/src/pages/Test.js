@@ -124,15 +124,48 @@ export default function Test() {
     window.open(`${API}/export/predictions?format=csv`, "_blank");
   }
 
-  // client-side delete/clear (local only; backend history remains)
-  function deleteRow(idxFromTop) {
-    const arr = [...history].reverse();
-    arr.splice(idxFromTop, 1);
-    setHistory(arr.reverse());
+  // Delete item from backend and refresh history
+  async function deleteRow(idxFromTop) {
+    try {
+      // Calculate the actual backend index (backend stores oldest first, UI shows newest first)
+      const backendIndex = history.length - 1 - idxFromTop;
+      
+      const response = await fetch(`${API}/history/${backendIndex}`, {
+        method: "DELETE",
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Failed to delete item: ${response.status}`);
+      }
+      
+      // Refresh history from backend after successful deletion
+      await refreshHistory();
+      
+      // Optional: Show success message (you can uncomment this if you want feedback)
+      // console.log("Item deleted successfully");
+    } catch (e) {
+      setErr(friendlyError(e));
+    }
   }
-  function clearLocal() {
-    setHistory([]);
+  
+  // Clear all history on backend
+  async function clearAllHistory() {
+    try {
+      const response = await fetch(`${API}/history`, {
+        method: "DELETE",
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Failed to clear history: ${response.status}`);
+      }
+      
+      // Clear local history after successful backend clear
+      setHistory([]);
+    } catch (e) {
+      setErr(friendlyError(e));
+    }
   }
+  
 
   return (
     <>
@@ -263,8 +296,8 @@ export default function Test() {
             <button className="ghost" onClick={exportCSV} type="button">
               Export CSV
             </button>
-            <button className="ghost" onClick={clearLocal} type="button">
-              Clear (local)
+            <button className="ghost" onClick={clearAllHistory} type="button">
+              Clear All
             </button>
           </div>
         </div>

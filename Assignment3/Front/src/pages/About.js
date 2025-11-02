@@ -754,8 +754,8 @@ export default function About() {
 
     d3.select(heatmapRef.current).selectAll("*").remove();
 
-    const margin = { top: 50, right: 50, bottom: 100, left: 100 };
-    const cellSize = 60;
+    const margin = { top: 80, right: 50, bottom: 120, left: 120 };
+    const cellSize = 70;
     const width = cellSize * features.length + margin.left + margin.right;
     const height = cellSize * features.length + margin.top + margin.bottom;
 
@@ -813,34 +813,29 @@ export default function About() {
 
     // X axis labels
     features.forEach((feat, i) => {
+      const xPos = i * cellSize + cellSize / 2;
+      const yPos = -15;
       svg.append("text")
-        .attr("x", i * cellSize + cellSize / 2)
-        .attr("y", -10)
-        .attr("text-anchor", "end")
-        .attr("transform", `rotate(-45, ${i * cellSize + cellSize / 2}, -10)`)
-        .attr("font-size", "11px")
+        .attr("x", xPos)
+        .attr("y", yPos)
+        .attr("text-anchor", "start")
+        .attr("transform", `rotate(-45, ${xPos}, ${yPos})`)
+        .attr("font-size", "12px")
+        .attr("font-weight", "500")
         .text(feat);
     });
 
     // Y axis labels
     features.forEach((feat, i) => {
       svg.append("text")
-        .attr("x", -10)
+        .attr("x", -15)
         .attr("y", i * cellSize + cellSize / 2)
         .attr("text-anchor", "end")
         .attr("dominant-baseline", "middle")
-        .attr("font-size", "11px")
+        .attr("font-size", "12px")
+        .attr("font-weight", "500")
         .text(feat);
     });
-
-    // Title
-    svg.append("text")
-      .attr("x", (cellSize * features.length) / 2)
-      .attr("y", -30)
-      .attr("text-anchor", "middle")
-      .attr("font-size", "14px")
-      .attr("font-weight", "bold")
-      .text("Feature Correlation Matrix");
 
   }, []);
 
@@ -993,6 +988,152 @@ export default function About() {
         overview of our training pipeline and two training charts to build trust.
       </p>
 
+      {/* About the Team */}
+      <div className="card" style={{ marginTop: 24 }}>
+        <h3 style={{ marginTop: 0 }}>About the Team</h3>
+        
+        <div style={{ 
+          display: 'grid', 
+          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', 
+          gap: '20px', 
+          marginTop: 20 
+        }}>
+          
+          {/* Duc Tri Tran */}
+          <div style={{ 
+            display: 'flex', 
+            alignItems: 'flex-start', 
+            gap: '15px',
+            padding: '15px',
+            background: '#f8f9fa',
+            borderRadius: '8px'
+          }}>
+            <div style={{
+              width: '80px',
+              height: '80px',
+              borderRadius: '50%',
+              background: '#e9ecef',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '24px',
+              color: '#6c757d',
+              flexShrink: 0
+            }}>
+              DT
+            </div>
+            <div>
+              <h4 style={{ margin: 0, marginBottom: '5px', fontSize: '16px' }}>
+                Duc Tri Tran
+              </h4>
+              <p style={{ 
+                margin: 0, 
+                marginBottom: '8px', 
+                fontSize: '13px', 
+                fontWeight: 'bold',
+                color: '#007bff' 
+              }}>
+                Data/ML Lead, Project Manager
+              </p>
+              <p className="small" style={{ margin: 0, lineHeight: 1.5 }}>
+                Leads technical development and project management, overseeing the core ML system 
+                from dataset preprocessing and feature engineering to model training and optimization. 
+                Manages project timelines and ensures all deliverables meet accuracy requirements.
+              </p>
+            </div>
+          </div>
+
+          {/* Quoc Phi Long Pham */}
+          <div style={{ 
+            display: 'flex', 
+            alignItems: 'flex-start', 
+            gap: '15px',
+            padding: '15px',
+            background: '#f8f9fa',
+            borderRadius: '8px'
+          }}>
+            <div style={{
+              width: '80px',
+              height: '80px',
+              borderRadius: '50%',
+              background: '#e9ecef',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '24px',
+              color: '#6c757d',
+              flexShrink: 0
+            }}>
+              QP
+            </div>
+            <div>
+              <h4 style={{ margin: 0, marginBottom: '5px', fontSize: '16px' }}>
+                Quoc Phi Long Pham
+              </h4>
+              <p style={{ 
+                margin: 0, 
+                marginBottom: '8px', 
+                fontSize: '13px', 
+                fontWeight: 'bold',
+                color: '#28a745' 
+              }}>
+                Web Development Lead
+              </p>
+              <p className="small" style={{ margin: 0, lineHeight: 1.5 }}>
+                Designs and builds the interactive web application, translating functional requirements 
+                into an intuitive user interface. Responsible for implementing features like file uploads, 
+                text analysis, and clear visualization of detection results using modern web technologies.
+              </p>
+            </div>
+          </div>
+
+          {/* Hengheng Lonh */}
+          <div style={{ 
+            display: 'flex', 
+            alignItems: 'flex-start', 
+            gap: '15px',
+            padding: '15px',
+            background: '#f8f9fa',
+            borderRadius: '8px'
+          }}>
+            <div style={{
+              width: '80px',
+              height: '80px',
+              borderRadius: '50%',
+              background: '#e9ecef',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '24px',
+              color: '#6c757d',
+              flexShrink: 0
+            }}>
+              HL
+            </div>
+            <div>
+              <h4 style={{ margin: 0, marginBottom: '5px', fontSize: '16px' }}>
+                Hengheng Lonh
+              </h4>
+              <p style={{ 
+                margin: 0, 
+                marginBottom: '8px', 
+                fontSize: '13px', 
+                fontWeight: 'bold',
+                color: '#dc3545' 
+              }}>
+                QA Lead
+              </p>
+              <p className="small" style={{ margin: 0, lineHeight: 1.5 }}>
+                Ensures quality, reliability, and integrity of the final product through comprehensive 
+                testing plans. Evaluates model performance against key metrics and conducts thorough 
+                functional and usability testing, managing bug tracking and user acceptance testing.
+              </p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
       <div className="pipeline">
         <div className="step">
           <div className="step-num">1</div>
@@ -1028,7 +1169,7 @@ export default function About() {
       </div>
 
       <div className="card" style={{ marginTop: 12 }}>
-        <h3 style={{ marginTop: 0 }}>Model Card (Short)</h3>
+        <h3 style={{ marginTop: 0 }}>Model Card</h3>
         <ul className="small" style={{ lineHeight: 1.7 }}>
           <li><b>Algorithm:</b> Random Forest</li>
           <li><b>Vectoriser:</b> TF-IDF (1–2 grams) + numeric features</li>
@@ -1063,111 +1204,28 @@ export default function About() {
 
       {/* Interactive Feature Visualization */}
       <div className="card" style={{ marginTop: 24 }}>
-        <h3 style={{ marginTop: 0 }}>🎨 Interactive Feature Analysis</h3>
-
-        {/* Interactive Guide Panel */}
-        <div style={{
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-          color: 'white',
-          padding: '20px',
-          borderRadius: '8px',
-          marginBottom: 20
-        }}>
-          <div style={{ fontWeight: 'bold', fontSize: '16px', marginBottom: 10 }}>
-            🎮 All Visualizations Are Fully Interactive!
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '15px', fontSize: '13px' }}>
-            <div>
-              <b>🖱️ Hover:</b> Tooltips, highlights, zoom effects
-            </div>
-            <div>
-              <b>👆 Click:</b> Toggle data, select points, focus
-            </div>
-            <div>
-              <b>🔍 Zoom:</b> Scroll on scatter plot for details
-            </div>
-            <div>
-              <b>✏️ Brush:</b> Drag on scatter to select areas
-            </div>
-          </div>
-        </div>
+        <h3 style={{ marginTop: 0 }}>Interactive Feature Analysis</h3>
 
         <p className="small" style={{ marginBottom: 20 }}>
-          Understanding key features that distinguish spam from ham messages. Explore the visualizations below!
-          <b> Red</b> represents spam characteristics, <b>green</b> represents ham (legitimate messages).
+          Key features that distinguish spam from ham messages. <b>Red</b> represents spam characteristics, <b>green</b> represents ham (legitimate messages).
         </p>
 
         <div style={{ marginBottom: 30 }}>
-          <h4 style={{ marginTop: 0, fontSize: '14px', color: '#555' }}>Interactive Feature Comparison Chart</h4>
-          <p className="small" style={{ marginBottom: 15, lineHeight: 1.6 }}>
-            This chart shows how different features vary between spam and ham messages:
-          </p>
-          <ul className="small" style={{ lineHeight: 1.7, marginBottom: 15 }}>
-            <li><b>Message Length:</b> Ham messages tend to be longer and more detailed</li>
-            <li><b>Digit Ratio:</b> Spam often contains more numbers (phone numbers, prices)</li>
-            <li><b>Capital Ratio:</b> Spam uses more CAPITALIZATION for emphasis</li>
-            <li><b>Special Characters:</b> Spam has more symbols (!!, $$, etc.)</li>
-            <li><b>URL Count:</b> Spam frequently includes promotional links</li>
-            <li><b>Average Word Length:</b> Similar between both, slight difference</li>
-          </ul>
-          <div className="small" style={{ marginBottom: 15, padding: '10px', background: '#fff3e0', borderRadius: '4px' }}>
-            <b>🎮 Try This:</b> <b>Hover</b> over bars to see tooltips with details. <b>Click the legend</b> to toggle spam/ham visibility. Bars grow when you hover!
-          </div>
+          <h4 style={{ marginTop: 0, fontSize: '14px', color: '#555' }}>Feature Comparison Chart</h4>
           <div ref={chartRef} style={{ overflow: 'auto', marginBottom: 20, position: 'relative' }}></div>
         </div>
 
         <div>
-          <h4 style={{ marginTop: 0, fontSize: '14px', color: '#555' }}>Interactive Two-Feature Distribution</h4>
-          <p className="small" style={{ marginBottom: 15, lineHeight: 1.6 }}>
-            This scatter plot shows how spam and ham messages cluster differently when comparing
-            digit ratio and capital ratio. Notice how spam messages (red) cluster in the upper-right
-            area with higher values, while ham messages (green) stay in the lower-left with lower values.
-            This separation is what helps our model identify spam effectively.
-          </p>
-          <div className="small" style={{ marginBottom: 15, padding: '10px', background: '#e3f2fd', borderRadius: '4px' }}>
-            <b>🎮 Interactive Controls:</b>
-            <ul style={{ marginBottom: 0, marginTop: 5 }}>
-              <li><b>Hover</b> over points to see detailed tooltips with digit ratio, capital ratio, and message length</li>
-              <li><b>Scroll</b> or <b>pinch</b> to zoom in/out for closer inspection (0.5x - 5x)</li>
-              <li><b>Drag</b> to pan around when zoomed in</li>
-              <li><b>Click Reset</b> button to restore original view</li>
-            </ul>
-          </div>
+          <h4 style={{ marginTop: 0, fontSize: '14px', color: '#555' }}>Two-Feature Distribution</h4>
           <div style={{ display: 'flex', justifyContent: 'center' }}>
             <div ref={scatterRef} style={{ position: 'relative' }}></div>
           </div>
-        </div>
-
-        <div className="card" style={{ marginTop: 20, background: '#f8f9fa' }}>
-          <h4 style={{ marginTop: 0, fontSize: '14px', color: '#555' }}>How to Use These Features to Identify Spam</h4>
-          <ul className="small" style={{ lineHeight: 1.7 }}>
-            <li>🔍 <b>High digit_ratio (&gt;0.05):</b> Watch for excessive numbers, often used in promotional spam</li>
-            <li>📢 <b>High capital_ratio (&gt;0.08):</b> Excessive CAPS often indicates spam trying to grab attention</li>
-            <li>⚠️ <b>Many special characters (&gt;10):</b> Symbols like !!!, $$$, or *** are common in spam</li>
-            <li>🔗 <b>Multiple URLs (&gt;1):</b> Legitimate messages rarely have multiple links</li>
-            <li>📏 <b>Short messages (&lt;200 chars):</b> Combined with other features, short promotional texts are often spam</li>
-            <li>✅ <b>Low values across metrics:</b> Ham messages typically have moderate, balanced feature values</li>
-          </ul>
         </div>
       </div>
 
       {/* Radar Chart */}
       <div className="card" style={{ marginTop: 24 }}>
-        <h3 style={{ marginTop: 0 }}>Interactive Feature Profile: Radar Chart</h3>
-        <p className="small" style={{ marginBottom: 20 }}>
-          This radar chart shows the characteristic profile of spam vs ham messages across multiple features.
-          The red area represents typical spam patterns, while green shows ham patterns. Notice how spam
-          consistently scores higher on most features except message length.
-        </p>
-        <div className="small" style={{ marginBottom: 15, padding: '10px', background: '#f3e5f5', borderRadius: '4px' }}>
-          <b>🎮 Interactive Features:</b>
-          <ul style={{ marginBottom: 0, marginTop: 5 }}>
-            <li><b>Hover</b> over feature labels to see detailed comparisons</li>
-            <li><b>Hover</b> over colored areas to highlight them</li>
-            <li><b>Hover</b> over dots to see exact values for each feature</li>
-            <li><b>Click</b> the legend circles to toggle spam/ham profiles on/off</li>
-          </ul>
-        </div>
+        <h3 style={{ marginTop: 0 }}>Feature Profile: Radar Chart</h3>
         <div style={{ display: 'flex', justifyContent: 'center', marginTop: 20 }}>
           <div ref={radarRef} style={{ position: 'relative' }}></div>
         </div>
@@ -1175,74 +1233,20 @@ export default function About() {
 
       {/* Heatmap */}
       <div className="card" style={{ marginTop: 24 }}>
-        <h3 style={{ marginTop: 0 }}>Interactive Feature Correlation Heatmap</h3>
-        <p className="small" style={{ marginBottom: 20 }}>
-          This heatmap reveals how different features correlate with each other. Green cells indicate positive
-          correlation (features increase together), while red shows negative correlation. Understanding these
-          relationships helps identify which features work together in spam detection.
-        </p>
-        <div className="small" style={{ marginBottom: 15, padding: '10px', background: '#e0f2f1', borderRadius: '4px' }}>
-          <b>🎮 How to Read:</b> <b>Hover</b> over cells to highlight them with a bold border. Each cell shows the correlation coefficient (-1 to 1).
-          <b>Green</b> = features increase together, <b>Red</b> = one increases as other decreases, <b>Yellow</b> = little correlation.
-        </div>
+        <h3 style={{ marginTop: 0 }}>Feature Correlation Heatmap</h3>
         <div style={{ display: 'flex', justifyContent: 'center', marginTop: 20 }}>
           <div ref={heatmapRef} style={{ overflow: 'auto', position: 'relative' }}></div>
-        </div>
-        <div className="small" style={{ marginTop: 15, padding: '10px', background: '#f8f9fa', borderRadius: '4px' }}>
-          <b>Key Insights:</b>
-          <ul style={{ marginBottom: 0, marginTop: 5 }}>
-            <li><b>Strong positive correlation:</b> digit_ratio and url_count (0.70) - spam often has both numbers and URLs</li>
-            <li><b>Negative correlation:</b> message_length and digit_ratio (-0.30) - short messages tend to be more promotional</li>
-            <li><b>Moderate correlation:</b> capital_ratio and special_chars (0.40) - attention-grabbing tactics go together</li>
-          </ul>
         </div>
       </div>
 
       {/* Box Plot */}
       <div className="card" style={{ marginTop: 24 }}>
         <h3 style={{ marginTop: 0 }}>Feature Distribution: Box Plots</h3>
-        <p className="small" style={{ marginBottom: 20 }}>
-          Box plots show the statistical distribution of each feature for spam (red) and ham (green) messages.
-          The box shows the interquartile range (middle 50% of data), the line inside is the median, and whiskers
-          extend to show the full range. Clear separation between spam and ham boxes indicates features that
-          strongly distinguish between the two classes.
-        </p>
         <div style={{ display: 'flex', justifyContent: 'center', marginTop: 20 }}>
           <div ref={violinRef}></div>
         </div>
-        <div className="small" style={{ marginTop: 15, padding: '10px', background: '#e8f5e9', borderRadius: '4px' }}>
-          <b>💡 Pro Tip:</b> Features with little overlap between spam and ham boxes (like digit_ratio and capital_ratio)
-          are the most powerful predictors. Our Random Forest model leverages these separations to make accurate predictions.
-        </div>
       </div>
 
-      {/* Summary Card */}
-      <div className="card" style={{ marginTop: 24, background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', color: 'white' }}>
-        <h3 style={{ marginTop: 0, color: 'white' }}>🎯 Key Takeaways</h3>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px', marginTop: 15 }}>
-          <div style={{ background: 'rgba(255,255,255,0.1)', padding: '15px', borderRadius: '8px' }}>
-            <div style={{ fontSize: '24px', marginBottom: '8px' }}>📊</div>
-            <div style={{ fontWeight: 'bold', marginBottom: '5px' }}>Multiple Features</div>
-            <div style={{ fontSize: '13px', opacity: 0.9 }}>
-              Spam detection uses 6+ features working together, not just single indicators
-            </div>
-          </div>
-          <div style={{ background: 'rgba(255,255,255,0.1)', padding: '15px', borderRadius: '8px' }}>
-            <div style={{ fontSize: '24px', marginBottom: '8px' }}>🔍</div>
-            <div style={{ fontWeight: 'bold', marginBottom: '5px' }}>Pattern Recognition</div>
-            <div style={{ fontSize: '13px', opacity: 0.9 }}>
-              The model identifies patterns like high digits + high caps + short length = spam
-            </div>
-          </div>
-          <div style={{ background: 'rgba(255,255,255,0.1)', padding: '15px', borderRadius: '8px' }}>
-            <div style={{ fontSize: '24px', marginBottom: '8px' }}>✅</div>
-            <div style={{ fontWeight: 'bold', marginBottom: '5px' }}>Proven Accuracy</div>
-            <div style={{ fontSize: '13px', opacity: 0.9 }}>
-              These visualizations are based on real data from our trained Random Forest model
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   );
 }
