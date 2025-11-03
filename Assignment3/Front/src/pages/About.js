@@ -1,8 +1,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
-b7468aae92045426ee1d4e1dff98f8b6d3737c5
-
 
 const img = (name) => `${process.env.PUBLIC_URL}/assets/${name}`;
 

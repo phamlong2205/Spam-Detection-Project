@@ -247,3 +247,136 @@ td{ color:var(--sub); border-top:1px solid var(--border); }
   box-shadow: 0 10px 22px rgba(20, 200, 197, 0.35);
   filter: saturate(1.05);
 }
+/* =========================
+   Night Mode (Dark Theme) — BASE
+   ========================= */
+
+/* Vars */
+html[data-theme="dark"]{
+  --bg:#0b1324; --panel:#0f172a; --panel-2:#0b1527; --border:#1f2a3a;
+  --text:#e5e7eb; --sub:#cbd5e1; --muted:#94a3b8;
+  --brand:#14b8a6; --brand-2:#22d3ee; --red:#ef4444; --green:#22c55e;
+}
+
+/* Surfaces */
+html[data-theme="dark"] body{ background:var(--bg); color:var(--text); }
+html[data-theme="dark"] .card{ background:var(--panel); border-color:var(--border); }
+html[data-theme="dark"] .hero{ background:var(--panel); }
+html[data-theme="dark"] textarea{ background:var(--panel-2); border-color:var(--border); color:var(--text); }
+html[data-theme="dark"] .json{ background:#0b1527; border-color:var(--border); }
+
+/* Header / Footer */
+html[data-theme="dark"] .site-header{ background:#0d1322; border-bottom-color:rgba(255,255,255,.06); }
+html[data-theme="dark"] .site-footer{ background:#0d1322; color:#cbd5e1; }
+html[data-theme="dark"] .footer-bottom{ background:#0a0f1c; color:#cbd5e1; }
+html[data-theme="dark"] .links a{ color:#e2e8f0; }
+
+/* Buttons */
+html[data-theme="dark"] .btn-ghost,
+html[data-theme="dark"] .btn-ghost:hover{ background:#0b1527; border-color:#1f2a3a; color:var(--text); }
+html[data-theme="dark"] .verdict-badge.spam,
+html[data-theme="dark"] .verdict-badge.ham,
+html[data-theme="dark"] button,
+html[data-theme="dark"] .btn-primary,
+html[data-theme="dark"] .btn-mini{ color:inherit; }
+
+/* Tables (global) */
+html[data-theme="dark"] table th{ background:var(--panel-2); border-bottom-color:var(--border); color:var(--text); }
+html[data-theme="dark"] table td{ color:var(--sub); border-top-color:var(--border); }
+
+/* Details + error banner */
+html[data-theme="dark"] details summary{ background:var(--panel-2); border-color:var(--border); }
+html[data-theme="dark"] .error{ background:#3f1d1d; color:#fde2e2; border-color:#7f1d1d; }
+
+/* Global text defaults inside main container */
+html[data-theme="dark"] .wrap h1,
+html[data-theme="dark"] .wrap h2,
+html[data-theme="dark"] .wrap h3,
+html[data-theme="dark"] .wrap h4,
+html[data-theme="dark"] .wrap h5,
+html[data-theme="dark"] .wrap h6,
+html[data-theme="dark"] .wrap p,
+html[data-theme="dark"] .wrap li,
+html[data-theme="dark"] .wrap label,
+html[data-theme="dark"] .wrap summary,
+html[data-theme="dark"] .wrap figcaption,
+html[data-theme="dark"] .wrap code,
+html[data-theme="dark"] .wrap pre{
+  color:var(--text);
+}
+html[data-theme="dark"] .wrap .small,
+html[data-theme="dark"] .wrap .tagline,
+html[data-theme="dark"] .wrap .f-note,
+html[data-theme="dark"] .wrap .f-muted{
+  color:var(--muted);
+}
+
+/* =========================
+   ABOUT PAGE — DARK MODE FORCE FIXES
+   (requested selectors kept as-is)
+   ========================= */
+
+/* 0) Make sure all normal text goes bright and fully opaque */
+html[data-theme="dark"] .wrap h1,
+html[data-theme="dark"] .wrap h2,
+html[data-theme="dark"] .wrap h3,
+html[data-theme="dark"] .wrap h4,
+html[data-theme="dark"] .wrap h5,
+html[data-theme="dark"] .wrap h6,
+html[data-theme="dark"] .wrap p,
+html[data-theme="dark"] .wrap li,
+html[data-theme="dark"] .wrap strong,
+html[data-theme="dark"] .wrap em,
+html[data-theme="dark"] .wrap span,
+html[data-theme="dark"] .wrap label,
+html[data-theme="dark"] .wrap summary,
+html[data-theme="dark"] .wrap figcaption{
+  color:var(--text) !important;
+  opacity:1 !important;
+}
+
+/* 1) “Muted” helper text still readable */
+html[data-theme="dark"] .wrap .small,
+html[data-theme="dark"] .wrap .tagline{
+  color:var(--muted) !important;
+  opacity:1 !important;
+}
+
+/* 2) Pipeline cards (1/2/3/4): titles & body text */
+html[data-theme="dark"] .pipeline .step,
+html[data-theme="dark"] .pipeline .step *{ color:var(--text) !important; }
+html[data-theme="dark"] .pipeline .step{
+  background:var(--panel) !important; border-color:var(--border) !important;
+}
+
+/* 3) Any “callout” boxes (the purple/blue info panels) */
+html[data-theme="dark"] .wrap .card,
+html[data-theme="dark"] .wrap .viz,
+html[data-theme="dark"] .wrap .callout,
+html[data-theme="dark"] .wrap [class*="callout"]{
+  background:var(--panel) !important; border-color:var(--border) !important; color:var(--text) !important;
+}
+
+/* 3b) If a block sets its own inline light background, override it */
+html[data-theme="dark"] .wrap [style*="background"]{
+  background:var(--panel) !important; color:var(--text) !important;
+}
+
+/* 4) Code pills like (label, message) */
+html[data-theme="dark"] code,
+html[data-theme="dark"] pre code{
+  background:#0b1527 !important; color:var(--text) !important; border-radius:8px;
+}
+
+/* 5) D3/SVG text, axes, and chart titles */
+html[data-theme="dark"] svg text{ fill:var(--text) !important; }
+html[data-theme="dark"] .axis text,
+html[data-theme="dark"] .tick text{ fill:var(--muted) !important; }
+html[data-theme="dark"] .chart-title{ fill:var(--text) !important; }
+
+/* 6) Lists: make bullets visible too */
+html[data-theme="dark"] .wrap ul li::marker{ color:var(--muted) !important; }
+
+/* 7) Tables on the page */
+html[data-theme="dark"] .wrap table th,
+html[data-theme="dark"] .wrap table td{ color:var(--text) !important; }
